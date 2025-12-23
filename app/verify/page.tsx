@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGameState } from "@/hooks/useGameState";
 import Button from "@/components/ui/Button";
 
@@ -13,12 +13,11 @@ export default function VerifyPage() {
   const [attempts, setAttempts] = useState(0);
   const [error, setError] = useState("");
   const [showCode, setShowCode] = useState(true);
+  const [isShaking, setIsShaking] = useState(false);
 
   // Mask code after 2 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowCode(false);
-    }, 2000);
+    const timer = setTimeout(() => setShowCode(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -34,14 +33,15 @@ export default function VerifyPage() {
     setError("");
   };
 
-  const handleClear = () => {
-    setEnteredCode("");
-    setError("");
+  const triggerShake = () => {
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 500);
   };
 
   const handleVerify = () => {
     if (enteredCode.length !== 6) {
-      setError("Please enter a 6-digit code");
+      setError("Identification incomplete");
+      triggerShake();
       return;
     }
 
@@ -51,132 +51,177 @@ export default function VerifyPage() {
     } else {
       const newAttempts = attempts + 1;
       setAttempts(newAttempts);
-      setError(`Incorrect code. ${2 - newAttempts} attempt(s) remaining.`);
-
-      if (newAttempts >= 2) {
-        setTimeout(() => {
-          router.push("/forgot-code");
-        }, 2000);
+      triggerShake();
+      
+      if (newAttempts >= 3) {
+        setError("Security lockout. Redirecting...");
+        setTimeout(() => router.push("/forgot-code"), 1500);
       } else {
+        setError(`Access Denied. ${3 - newAttempts} attempts remaining.`);
         setEnteredCode("");
-        setTimeout(() => {
-          setShowCode(false);
-          setTimeout(() => setShowCode(true), 100);
-        }, 500);
       }
     }
   };
 
-  const handleForgotCode = () => {
-    router.push("/forgot-code");
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#05070A] relative overflow-hidden flex items-center justify-center p-6">
+      {/* 1. Background Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[120px]" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]" />
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full"
+        animate={{ 
+          opacity: 1, 
+          y: 0,
+          x: isShaking ? [-10, 10, -10, 10, 0] : 0
+        }}
+        transition={{ duration: 0.5 }}
+        className="max-w-md w-full z-10"
       >
-        <div className="bg-gray-800 rounded-2xl p-8">
-          <h1 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Security Verification
-          </h1>
-          <p className="text-gray-400 text-center mb-8">
-            Please enter your 6-digit security code
-          </p>
+        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+          {/* Decorative Scanline */}
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent h-1/2 pointer-events-none animate-pulse" />
+          
+          <div className="text-center mb-10">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-blue-400 font-mono text-[10px] tracking-[0.4em] uppercase mb-4"
+            >
+              Authorization Required
+            </motion.div>
+            <h1 className="text-3xl font-black text-white tracking-tight uppercase">
+              The Final Seal
+            </h1>
+            <p className="text-slate-500 text-sm mt-2">Enter the 6-digit key from your registration.</p>
+          </div>
 
-          {/* Code Display */}
-          <div className="flex justify-center gap-3 mb-8">
+          {/* 2. Code Input Display */}
+          <div className="flex justify-between gap-2 mb-10">
             {[0, 1, 2, 3, 4, 5].map((index) => (
               <motion.div
                 key={index}
-                className={`w-16 h-16 rounded-lg flex items-center justify-center text-2xl font-bold font-mono ${
-                  enteredCode[index]
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-700 text-gray-400"
-                }`}
+                initial={false}
                 animate={{
-                  scale: enteredCode[index] ? [1, 1.1, 1] : 1,
+                  borderColor: enteredCode.length === index ? "rgba(59, 130, 246, 0.5)" : "rgba(255, 255, 255, 0.1)",
+                  scale: enteredCode[index] ? 1.05 : 1,
+                  backgroundColor: enteredCode[index] ? "rgba(59, 130, 246, 0.1)" : "rgba(255, 255, 255, 0.02)"
                 }}
-                transition={{ duration: 0.2 }}
+                className={`w-12 h-16 md:w-14 md:h-20 rounded-2xl border-2 flex items-center justify-center text-2xl font-black font-mono transition-all duration-300 ${
+                  enteredCode[index] ? "text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.2)]" : "text-slate-700"
+                }`}
               >
-                {enteredCode[index] ? (showCode ? enteredCode[index] : "•") : ""}
+                <AnimatePresence mode="wait">
+                  {enteredCode[index] ? (
+                    <motion.span
+                      key={showCode ? "visible" : "masked"}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 1.5 }}
+                    >
+                      {showCode ? enteredCode[index] : "•"}
+                    </motion.span>
+                  ) : (
+                    <motion.div 
+                      key="empty"
+                      initial={{ opacity: 0.3 }}
+                      animate={{ opacity: enteredCode.length === index ? [0.3, 0.6, 0.3] : 0.3 }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="w-1.5 h-1.5 rounded-full bg-current" 
+                    />
+                  )}
+                </AnimatePresence>
               </motion.div>
             ))}
           </div>
 
-          {error && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-red-400 text-center mb-4"
-            >
-              {error}
-            </motion.p>
-          )}
+          {/* Error Message */}
+          <div className="h-6 mb-4 text-center">
+            <AnimatePresence>
+              {error && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="text-red-400 text-xs font-bold uppercase tracking-wider"
+                >
+                  {error}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
 
-          {/* Numeric Keypad */}
-          <div className="grid grid-cols-3 gap-3 mb-6">
+          {/* 3. Immersive Keypad */}
+          <div className="grid grid-cols-3 gap-4 mb-8">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
               <motion.button
                 key={num}
                 onClick={() => handleNumberPress(num)}
-                className="bg-gray-700 hover:bg-gray-600 text-white text-2xl font-bold py-4 rounded-lg"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+                whileTap={{ scale: 0.9 }}
+                className="h-16 rounded-2xl bg-white/[0.04] border border-white/5 text-white text-2xl font-bold transition-colors active:border-blue-500/50"
               >
                 {num}
               </motion.button>
             ))}
             <motion.button
               onClick={handleBackspace}
-              className="bg-red-600 hover:bg-red-700 text-white text-xl font-bold py-4 rounded-lg"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ backgroundColor: "rgba(239, 68, 68, 0.1)" }}
+              whileTap={{ scale: 0.9 }}
+              className="h-16 rounded-2xl bg-white/[0.04] border border-white/5 text-red-500 text-xl flex items-center justify-center"
             >
-              ←
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.41-6.41a2 2 0 012.83 0L19 12l-6.76 6.76a2 2 0 01-2.83 0L3 12z" />
+              </svg>
             </motion.button>
             <motion.button
               onClick={() => handleNumberPress(0)}
-              className="bg-gray-700 hover:bg-gray-600 text-white text-2xl font-bold py-4 rounded-lg"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+              whileTap={{ scale: 0.9 }}
+              className="h-16 rounded-2xl bg-white/[0.04] border border-white/5 text-white text-2xl font-bold"
             >
               0
             </motion.button>
             <motion.button
-              onClick={handleClear}
-              className="bg-gray-600 hover:bg-gray-500 text-white text-sm font-bold py-4 rounded-lg"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              onClick={() => setEnteredCode("")}
+              whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+              whileTap={{ scale: 0.9 }}
+              className="h-16 rounded-2xl bg-white/[0.04] border border-white/5 text-slate-500 text-xs font-bold uppercase tracking-widest"
             >
-              Clear
+              Reset
             </motion.button>
           </div>
 
-          {/* Action Buttons */}
-          <div className="space-y-3">
-            <Button
-              size="lg"
-              onClick={handleVerify}
-              disabled={enteredCode.length !== 6}
-              className="w-full"
+          {/* 4. Action Buttons */}
+          <div className="space-y-4">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000" />
+              <Button
+                size="lg"
+                onClick={handleVerify}
+                disabled={enteredCode.length !== 6}
+                className={`relative w-full py-7 text-lg font-black uppercase tracking-[0.2em] rounded-2xl transition-all duration-300 ${
+                  enteredCode.length === 6 
+                  ? "bg-blue-600 text-white shadow-xl" 
+                  : "bg-white/5 text-slate-600 border border-white/5"
+                }`}
+              >
+                Authorize
+              </Button>
+            </div>
+            
+            <button
+              onClick={() => router.push("/forgot-code")}
+              className="w-full text-slate-500 hover:text-blue-400 text-[10px] font-bold uppercase tracking-[0.3em] transition-colors py-2"
             >
-              Verify Code
-            </Button>
-            <Button
-              variant="secondary"
-              size="md"
-              onClick={handleForgotCode}
-              className="w-full"
-            >
-              Forgot Code
-            </Button>
+              Lost your security key?
+            </button>
           </div>
         </div>
       </motion.div>
     </div>
   );
 }
-
