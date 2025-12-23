@@ -30,6 +30,11 @@ export default function QuizPage() {
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
+  // Safety check: ensure currentQuestion exists and has valid data
+  if (!currentQuestion || typeof currentQuestion.correctAnswer !== 'number') {
+    return <div className="min-h-screen bg-black flex items-center justify-center text-white">Error loading question</div>;
+  }
+
   useEffect(() => {
     setStartTime(Date.now());
     setTimeLeft(QUESTION_TIME_LIMIT);
@@ -56,11 +61,16 @@ export default function QuizPage() {
 
   const handleAnswer = (answerIndex: number) => {
     if (isAnswered) return;
+    if (!currentQuestion) return;
 
     const timeSpent = QUESTION_TIME_LIMIT - timeLeft;
-    const correct = answerIndex === currentQuestion.correctAnswer;
+    // Ensure both values are numbers and compare strictly
+    const correctAnswerIndex = Number(currentQuestion.correctAnswer);
+    const selectedIndex = Number(answerIndex);
+    // Use strict equality to ensure exact match
+    const correct = selectedIndex === correctAnswerIndex && !isNaN(selectedIndex) && !isNaN(correctAnswerIndex);
     
-    setSelectedAnswer(answerIndex);
+    setSelectedAnswer(selectedIndex);
     setIsAnswered(true);
     setIsCorrect(correct);
     setShowFeedback(true);
@@ -152,8 +162,11 @@ export default function QuizPage() {
 
           <div className="space-y-4">
             {currentQuestion.options.map((option, index) => {
-              const isSelected = selectedAnswer === index;
-              const isCorrectOption = index === currentQuestion.correctAnswer;
+              const optionIndex = Number(index);
+              const isSelected = selectedAnswer !== null && Number(selectedAnswer) === optionIndex;
+              // Ensure both values are numbers for comparison
+              const correctAnswerIndex = Number(currentQuestion.correctAnswer);
+              const isCorrectOption = optionIndex === correctAnswerIndex;
               const showCorrect = isAnswered && isCorrectOption;
 
               return (
