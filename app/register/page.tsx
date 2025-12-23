@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -11,7 +10,7 @@ import LoadingScreen from "@/components/game/LoadingScreen";
 import Countdown from "@/components/ui/Countdown";
 import Button from "@/components/ui/Button";
 
-// --- Configuration & Assets ---
+// --- Configuration ---
 const LOCATIONS = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
   "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala",
@@ -20,37 +19,6 @@ const LOCATIONS = [
   "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
 ];
 
-const MapPinIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 opacity-70">
-    <path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z" clipRule="evenodd" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <motion.svg initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-  </motion.svg>
-);
-
-// --- Animation Variants ---
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-  exit: { opacity: 0, transition: { duration: 0.3 } }
-};
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } }
-};
-
-const stepTransitionVariants = {
-  initial: { opacity: 0, x: 50, scale: 0.95 },
-  animate: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.5, ease: "easeOut" } },
-  exit: { opacity: 0, x: -50, scale: 0.95, transition: { duration: 0.3, ease: "easeIn" } }
-};
-
-// --- Main Component ---
 export default function RegisterPage() {
   const router = useRouter();
   const { setPlayerName, setPlayerLocation, setSecurityCode, playerLocation } = useGameState();
@@ -60,287 +28,192 @@ export default function RegisterPage() {
   const [step, setStep] = useState<"input" | "loading" | "code" | "countdown">("input");
   const [securityCode, setSecurityCodeLocal] = useState("");
   const [error, setError] = useState("");
-  const [isValidName, setIsValidName] = useState(false);
+  const [loadProgress, setLoadProgress] = useState(0);
 
-  // Handle Escape key to close keyboard
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && showKeyboard) setShowKeyboard(false);
-    };
-    window.addEventListener("keydown", handleEscape);
-    return () => window.removeEventListener("keydown", handleEscape);
-  }, [showKeyboard]);
-
-  const generateSecurityCode = () => Math.floor(100000 + Math.random() * 900000).toString();
-
-  const validateName = (nameToValidate: string): boolean => {
-    if (nameToValidate.length < 2 || nameToValidate.length > 50) {
-      setError("Name must be between 2 and 50 characters");
-      setIsValidName(false);
+  // --- Logic ---
+  const validateName = (val: string) => {
+    if (val.length < 2) {
+      setError("Identification too short");
       return false;
     }
-    if (!/^[a-zA-Z\s'-]+$/.test(nameToValidate)) {
-      setError("Name can only contain letters, spaces, hyphens, and apostrophes");
-      setIsValidName(false);
+    if (!/^[a-zA-Z\s'-]+$/.test(val)) {
+      setError("Invalid characters detected");
       return false;
     }
     setError("");
-    setIsValidName(true);
     return true;
-  };
-
-  const handleNameTranscribe = (text: string) => {
-    const cleaned = text.trim();
-    setName(cleaned);
-    if (cleaned.length > 0 && validateName(cleaned)) {
-      setPlayerName(cleaned);
-    }
   };
 
   const handleNameChange = (newName: string) => {
     setName(newName);
-    if (newName.length > 0) {
-      if (validateName(newName)) setPlayerName(newName);
-    } else {
-      setError("");
-      setIsValidName(false);
+    if (newName.length > 0 && validateName(newName)) {
+      setPlayerName(newName);
     }
   };
 
-  const handleLocationSelect = (location: string) => {
-    setPlayerLocation(location);
-  };
+  // Loading sequence with progress simulation
+  useEffect(() => {
+    if (step === "loading") {
+      const interval = setInterval(() => {
+        setLoadProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            return 100;
+          }
+          return prev + 1;
+        });
+      }, 40);
+      return () => clearInterval(interval);
+    }
+  }, [step]);
 
   const handleSubmit = () => {
-    const trimmedName = name.trim();
-    if (!trimmedName || !validateName(trimmedName)) {
-      setError("Please enter a valid name");
-      return;
-    }
-    if (!playerLocation) {
-      setError("Please select your location");
-      return;
-    }
-
-    setShowKeyboard(false);
-    setError("");
+    if (!name || !playerLocation || error) return;
+    
     setStep("loading");
-
-    const code = generateSecurityCode();
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
     setSecurityCodeLocal(code);
     setSecurityCode(code);
 
-    setTimeout(() => setStep("code"), 4000);
+    // Sequence timing
+    setTimeout(() => setStep("code"), 4500);
     setTimeout(() => setStep("countdown"), 9000);
   };
 
-  // --- Sub-components for different steps ---
-
-  const ProgressIndicator = ({ currentStep }: { currentStep: string }) => {
-    const steps = ['input', 'loading', 'code'];
-    const currentIndex = steps.indexOf(currentStep === 'countdown' ? 'code' : currentStep);
-
-    return (
-      <div className="flex items-center justify-center space-x-2 mb-8">
-        {steps.map((s, i) => (
-          <div key={s} className="flex items-center">
-            <motion.div 
-              initial={false}
-              animate={{
-                backgroundColor: i <= currentIndex ? (i === currentIndex ? "#3B82F6" : "#10B981") : "#374151",
-                scale: i === currentIndex ? 1.2 : 1
-              }}
-              className="w-3 h-3 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"
-            />
-            {i < steps.length - 1 && <div className={`w-8 h-1 mx-2 rounded ${i < currentIndex ? 'bg-green-500' : 'bg-gray-700'}`} />}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  const InputStep = () => (
-    <motion.div key="input-step" variants={containerVariants} initial="hidden" animate="visible" exit="exit" className="max-w-3xl mx-auto">
-      
-      <motion.div variants={itemVariants} className="text-center mb-8">
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(59,130,246,0.3)]">
-          Identify Yourself
-        </h1>
-        <p className="text-blue-200/70 text-lg">Prepare for your journey through Matthew.</p>
-      </motion.div>
-
-      <div className="bg-gray-900/50 backdrop-blur-xl p-6 md:p-8 rounded-3xl border border-gray-800/50 shadow-[0_0_30px_rgba(0,0,0,0.3)] space-y-8 relative overflow-hidden">
-        {/* Subtle internal glow */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent opacity-50" />
-
-        {/* Name Section */}
-        <motion.div variants={itemVariants} className="space-y-4">
-          <label className="block text-blue-300 text-sm font-bold uppercase tracking-wider mb-2">Alternatively: Use Voice or Keyboard</label>
-          
-          <div className="relative group">
-             <VoiceInput
-              onTranscribe={handleNameTranscribe}
-              onError={setError}
-              onShowKeyboard={() => setShowKeyboard(true)}
-            />
-             {/* Visual embellishment connecting voice to text */}
-            <div className="absolute top-1/2 -translate-y-1/2 left-[60px] right-[60px] h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent pointer-events-none"></div>
-          </div>
-
-
-          <div className="relative mt-4">
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="Enter your full name..."
-              maxLength={50}
-              className={`w-full pl-4 pr-12 py-4 bg-black/40 text-white placeholder-gray-500 rounded-xl border-2 transition-all duration-300 focus:outline-none focus:ring-0 ${isValidName ? 'border-green-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'border-gray-700 focus:border-blue-500/70 focus:shadow-[0_0_20px_rgba(59,130,246,0.2)]'}`}
-            />
-            <div className="absolute right-4 top-1/2 -translate-y-1/2">
-              {isValidName ? <CheckIcon /> : null}
-            </div>
-          </div>
-           <AnimatePresence>
-            {error && (
-              <motion.p initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-red-400 text-sm mt-2 flex items-center">
-                <span className="mr-2">⚠️</span>{error}
-              </motion.p>
-            )}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Location Section */}
-        <motion.div variants={itemVariants}>
-          <label className="block text-blue-300 text-sm font-bold uppercase tracking-wider mb-4">Select Origin Point</label>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar">
-            {LOCATIONS.map((location) => {
-              const isSelected = playerLocation === location;
-              return (
-                <motion.button
-                  key={location}
-                  onClick={() => handleLocationSelect(location)}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.03, y: -2, backgroundColor: isSelected ? "rgba(37, 99, 235, 0.9)" : "rgba(55, 65, 81, 0.7)" }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`p-3 rounded-xl font-medium text-sm transition-all duration-300 flex items-center space-x-2 border ${
-                    isSelected
-                      ? "bg-blue-600 text-white border-blue-400 shadow-[0_0_15px_rgba(37,99,235,0.4)]"
-                      : "bg-gray-800/60 text-gray-300 border-gray-700/50 hover:border-blue-500/30"
-                  }`}
-                >
-                  <MapPinIcon />
-                  <span className="truncate">{location}</span>
-                </motion.button>
-              );
-            })}
-          </div>
-        </motion.div>
-
-        {/* Submit Section */}
-        <motion.div variants={itemVariants} className="pt-4 flex justify-center">
-          <div className="relative group">
-             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur-lg opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse-slow"></div>
-              <Button
-                size="lg"
-                onClick={handleSubmit}
-                disabled={!isValidName || !playerLocation}
-                className="relative px-16 py-4 text-lg font-bold tracking-wider uppercase bg-gray-900 hover:bg-gray-800 text-white border border-blue-500/30"
-              >
-                Initialize Journey
-              </Button>
-          </div>
-        </motion.div>
-      </div>
-    </motion.div>
-  );
-
-  const CodeStep = () => (
-    <motion.div
-      key="code-step"
-      variants={stepTransitionVariants}
-      initial="initial" animate="animate" exit="exit"
-      className="min-h-[60vh] flex flex-col items-center justify-center text-center"
-    >
-      <div className="relative">
-        {/* Rotating orbital rings */}
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute inset-[-50px] border-2 border-dashed border-blue-500/20 rounded-full pointer-events-none"></motion.div>
-        <motion.div animate={{ rotate: -360 }} transition={{ duration: 15, repeat: Infinity, ease: "linear" }} className="absolute inset-[-30px] border border-dashed border-purple-500/20 rounded-full pointer-events-none"></motion.div>
-
-        <div className="bg-black/60 backdrop-blur-md p-10 rounded-3xl border-2 border-blue-500/50 shadow-[0_0_50px_rgba(37,99,235,0.3)] relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent animate-scanline pointer-events-none"></div>
-          
-          <motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{delay: 0.5}} className="text-blue-300 text-sm uppercase tracking-[0.2em] mb-6">Authorization Sequence Complete</motion.p>
-          <p className="text-gray-400 text-sm mb-2">Your Unique Security Identifier</p>
-          
-          <motion.div
-            initial={{ scale: 0.8, filter: "blur(10px)" }}
-            animate={{ scale: 1, filter: "blur(0px)" }}
-            transition={{ type: "spring", bounce: 0.5, duration: 1.5 }}
-            className="relative"
-          >
-            <h2 className="text-6xl md:text-8xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-b from-cyan-300 to-blue-600 drop-shadow-[0_0_25px_rgba(6,182,212,0.6)] tracking-widest">
-              {securityCode}
-            </h2>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 2.5 }} className="mt-8 space-y-2">
-             <p className="text-xl text-white font-bold uppercase tracking-wider animate-pulse">Identify & Memorize</p>
-             <p className="text-gray-400 text-sm">Required for final validation.</p>
-          </motion.div>
-        </div>
-      </div>
-    </motion.div>
-  );
-
-  const CountdownStep = () => (
-    <motion.div key="countdown-step" variants={stepTransitionVariants} initial="initial" animate="animate" exit="exit" className="min-h-[60vh] flex items-center justify-center">
-      <div className="bg-black/40 backdrop-blur-lg p-12 rounded-full border border-blue-500/20 shadow-[0_0_60px_rgba(37,99,235,0.2)]">
-        <Countdown from={5} onComplete={() => router.push("/quiz")} />
-      </div>
-    </motion.div>
-  );
-
-
-  // --- Main Render ---
   return (
-    <div className="min-h-screen bg-[#05070A] relative overflow-hidden text-slate-200 selection:bg-blue-500/30 font-sans">
-      {/* Atmospheric Background Layers */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(29,78,216,0.15),transparent_70%)]"></div>
-        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black via-[#0a0a12] to-transparent"></div>
-        {/* Subtle Grid Overlay */}
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-10"></div>
-         {/* Floating Particles (CSS based for performance) */}
-         <div className="particle-container absolute inset-0 overflow-hidden opacity-30">
-            {[...Array(15)].map((_, i) => (
-                <div key={i} className="particle absolute rounded-full bg-blue-400" style={{
-                    top: `${Math.random() * 100}%`,
-                    left: `${Math.random() * 100}%`,
-                    width: `${Math.random() * 4 + 1}px`,
-                    height: `${Math.random() * 4 + 1}px`,
-                    animation: `float ${Math.random() * 10 + 15}s linear infinite`,
-                    animationDelay: `-${Math.random() * 10}s`
-                }}></div>
-            ))}
-         </div>
+    <div className="min-h-screen bg-[#020408] text-slate-200 selection:bg-blue-500/30 font-sans overflow-hidden">
+      
+      {/* 1. Immersive Background Layer */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(29,78,216,0.1),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]" />
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 container mx-auto px-4 py-12 md:py-20 flex flex-col items-center justify-center min-h-screen">
+      <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col items-center justify-center py-10">
         
-        {step !== 'countdown' && <ProgressIndicator currentStep={step} />}
-
         <AnimatePresence mode="wait">
-          {step === "input" && <InputStep />}
-          {step === "loading" && <motion.div key="loading" variants={stepTransitionVariants} initial="initial" animate="animate" exit="exit"><LoadingScreen text="Establishing Connection..." /></motion.div>}
-          {step === "code" && <CodeStep />}
-          {step === "countdown" && <CountdownStep />}
+          {/* STEP: INPUT */}
+          {step === "input" && (
+            <motion.div 
+              key="input"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="w-full max-w-2xl space-y-8"
+            >
+              <div className="text-center space-y-2">
+                <motion.h1 className="text-4xl md:text-5xl font-black tracking-tighter bg-gradient-to-b from-white to-gray-500 bg-clip-text text-transparent">
+                  PILGRIM REGISTRATION
+                </motion.h1>
+                <p className="text-blue-400/60 font-mono text-sm tracking-widest uppercase">Initializing Soul Archive...</p>
+              </div>
+
+              <div className="bg-gray-900/40 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 shadow-2xl space-y-10">
+                {/* Voice & Name Section */}
+                <section className="space-y-6">
+                  <div className="flex flex-col items-center space-y-4">
+                    <VoiceInput 
+                      onTranscribe={handleNameChange} 
+                      onError={setError}
+                      onShowKeyboard={() => setShowKeyboard(true)}
+                    />
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                  </div>
+
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      value={name}
+                      readOnly // Disables physical keyboard
+                      onKeyDown={(e) => e.preventDefault()} // Extra safety
+                      onClick={() => setShowKeyboard(true)}
+                      placeholder="TOUCH TO ENTER NAME"
+                      className="w-full bg-black/40 border-2 border-white/5 rounded-xl py-5 px-6 text-center text-xl font-bold tracking-widest text-blue-100 placeholder:text-gray-700 cursor-pointer transition-all hover:border-blue-500/30 focus:border-blue-500/50 outline-none"
+                    />
+                    <div className="absolute -bottom-6 left-0 right-0 text-center">
+                      {error && <span className="text-red-500 text-xs font-mono uppercase tracking-tighter">{error}</span>}
+                    </div>
+                  </div>
+                </section>
+
+                {/* Location Grid */}
+                <section className="space-y-4">
+                  <h3 className="text-center text-xs font-bold text-gray-500 tracking-[0.3em] uppercase">Select Province of Origin</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar p-1">
+                    {LOCATIONS.map((loc) => (
+                      <button
+                        key={loc}
+                        onClick={() => setPlayerLocation(loc)}
+                        className={`py-3 px-2 rounded-lg text-xs font-bold transition-all border ${
+                          playerLocation === loc 
+                            ? "bg-blue-600 border-blue-400 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]" 
+                            : "bg-white/5 border-transparent text-gray-400 hover:bg-white/10"
+                        }`}
+                      >
+                        {loc}
+                      </button>
+                    ))}
+                  </div>
+                </section>
+
+                <div className="flex justify-center pt-4">
+                  <Button
+                    size="lg"
+                    disabled={!name || !playerLocation || !!error}
+                    onClick={handleSubmit}
+                    className="w-full py-6 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black tracking-widest uppercase shadow-[0_10px_30px_rgba(37,99,235,0.3)] transition-all active:scale-95 disabled:opacity-20 disabled:grayscale"
+                  >
+                    Confirm Credentials
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP: LOADING */}
+          {step === "loading" && (
+            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-8">
+              <LoadingScreen />
+              <div className="w-64 h-1 bg-gray-800 rounded-full mx-auto overflow-hidden">
+                <motion.div 
+                  className="h-full bg-blue-500" 
+                  initial={{ width: 0 }} 
+                  animate={{ width: `${loadProgress}%` }} 
+                />
+              </div>
+              <p className="text-blue-400 font-mono text-sm animate-pulse">ENCRYPTING DATA... {loadProgress}%</p>
+            </motion.div>
+          )}
+
+          {/* STEP: CODE REVEAL */}
+          {step === "code" && (
+            <motion.div key="code" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="text-center space-y-6">
+              <div className="p-1 rounded-3xl bg-gradient-to-b from-blue-500 to-purple-600 shadow-[0_0_50px_rgba(59,130,246,0.3)]">
+                <div className="bg-[#05070A] rounded-[22px] px-12 py-16 space-y-4">
+                  <p className="text-gray-500 text-xs font-mono uppercase tracking-[0.4em]">Unique Security Key</p>
+                  <h2 className="text-7xl md:text-8xl font-black text-white font-mono tracking-tighter">
+                    {securityCode}
+                  </h2>
+                  <div className="pt-4">
+                    <p className="text-blue-400 text-lg font-bold">MEMORIZE THIS CODE</p>
+                    <p className="text-gray-600 text-sm italic">Required for final ascension</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP: COUNTDOWN */}
+          {step === "countdown" && (
+            <motion.div key="countdown" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="scale-150">
+              <Countdown from={5} onComplete={() => router.push("/quiz")} />
+            </motion.div>
+          )}
         </AnimatePresence>
 
       </div>
 
-      {/* Modals */}
+      {/* 4. On-Screen Keyboard Modal */}
       <AnimatePresence>
         {showKeyboard && (
           <>
@@ -349,44 +222,33 @@ export default function RegisterPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowKeyboard(false)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100]"
             />
-            <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4 pointer-events-none">
-              <div className="pointer-events-auto w-full max-w-2xl">
-                 <OnScreenKeyboard
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed bottom-0 left-0 right-0 z-[101] p-4 md:p-8 flex justify-center"
+            >
+              <div className="w-full max-w-4xl">
+                <OnScreenKeyboard
                   value={name}
                   onChange={handleNameChange}
                   onClose={() => setShowKeyboard(false)}
                 />
               </div>
-            </div>
+            </motion.div>
           </>
         )}
       </AnimatePresence>
 
-        {/* Global CSS for Particles & Scrollbar */}
-        <style jsx global>{`
-            @keyframes float {
-                0% { transform: translateY(0) translateX(0); opacity: 0; }
-                10% { opacity: 1; }
-                90% { opacity: 1; }
-                100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
-            }
-            .custom-scrollbar::-webkit-scrollbar {
-                width: 6px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 10px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-                background: rgba(59, 130, 246, 0.5);
-                border-radius: 10px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                background: rgba(59, 130, 246, 0.7);
-            }
-        `}</style>
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.2); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.5); }
+      `}</style>
     </div>
   );
 }
