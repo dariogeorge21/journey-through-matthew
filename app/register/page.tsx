@@ -11,18 +11,34 @@ import Countdown from "@/components/ui/Countdown";
 import Button from "@/components/ui/Button";
 
 const LOCATIONS = [
-  "North America",
-  "South America",
-  "Europe",
-  "Asia",
-  "Africa",
-  "Australia",
-  "Middle East",
-  "Central America",
-  "Caribbean",
-  "Oceania",
-  "Antarctica",
-  "Other",
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
 ];
 
 export default function RegisterPage() {
@@ -40,6 +56,17 @@ export default function RegisterPage() {
   const [step, setStep] = useState<"input" | "loading" | "code" | "countdown">("input");
   const [securityCode, setSecurityCodeLocal] = useState("");
   const [error, setError] = useState("");
+
+  // Handle Escape key to close keyboard
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && showKeyboard) {
+        setShowKeyboard(false);
+      }
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [showKeyboard]);
 
   const generateSecurityCode = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -60,16 +87,27 @@ export default function RegisterPage() {
 
   const handleNameTranscribe = (text: string) => {
     const cleaned = text.trim();
-    if (validateName(cleaned)) {
-      setName(cleaned);
-      setPlayerName(cleaned);
+    setName(cleaned);
+    if (cleaned.length > 0) {
+      if (validateName(cleaned)) {
+        setPlayerName(cleaned);
+      }
+    } else {
+      setError("");
     }
   };
 
   const handleNameChange = (newName: string) => {
     setName(newName);
+    // Always validate if there's input, clear error if empty
     if (newName.length > 0) {
-      validateName(newName);
+      const isValid = validateName(newName);
+      // Update player name in state only if valid
+      if (isValid) {
+        setPlayerName(newName);
+      }
+    } else {
+      setError("");
     }
   };
 
@@ -78,7 +116,8 @@ export default function RegisterPage() {
   };
 
   const handleSubmit = () => {
-    if (!name || !validateName(name)) {
+    const trimmedName = name.trim();
+    if (!trimmedName || !validateName(trimmedName)) {
       setError("Please enter a valid name");
       return;
     }
@@ -87,6 +126,8 @@ export default function RegisterPage() {
       return;
     }
 
+    // Close keyboard if open
+    setShowKeyboard(false);
     setError("");
     setStep("loading");
 
@@ -112,13 +153,6 @@ export default function RegisterPage() {
 
   if (step === "loading") {
     return <LoadingScreen />;
-  }
-
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <LoadingSpinner message={messages[messageIndex]} size="lg" />
-      </div>
-    );
   }
 
   if (step === "code") {
@@ -200,7 +234,25 @@ export default function RegisterPage() {
             <VoiceInput
               onTranscribe={handleNameTranscribe}
               onError={(err) => setError(err)}
+              onShowKeyboard={() => setShowKeyboard(true)}
             />
+            {/* Text Input Fallback */}
+            <div className="mt-4">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => handleNameChange(e.target.value)}
+                placeholder="Or type your name here"
+                maxLength={50}
+                className="w-full px-4 py-3 bg-gray-900 text-white rounded-lg border border-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={() => setShowKeyboard(true)}
+                className="mt-2 text-blue-400 hover:text-blue-300 underline text-sm"
+              >
+                Use On-Screen Keyboard
+              </button>
+            </div>
             {name && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -210,7 +262,7 @@ export default function RegisterPage() {
                 <p className="text-gray-300">Name: {name}</p>
               </motion.div>
             )}
-            {error && name.length > 0 && (
+            {error && (
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -257,19 +309,10 @@ export default function RegisterPage() {
             transition={{ delay: 0.6 }}
             className="text-center"
           >
-            {error && !name && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-red-400 mb-4"
-              >
-                {error}
-              </motion.p>
-            )}
             <Button
               size="lg"
               onClick={handleSubmit}
-              disabled={!name || !playerLocation || !!error}
+              disabled={!name.trim() || !playerLocation || (error.length > 0 && name.trim().length > 0)}
               className="px-12"
             >
               Continue
@@ -280,11 +323,21 @@ export default function RegisterPage() {
 
       <AnimatePresence>
         {showKeyboard && (
-          <OnScreenKeyboard
-            value={name}
-            onChange={handleNameChange}
-            onClose={() => setShowKeyboard(false)}
-          />
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowKeyboard(false)}
+              className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            />
+            <OnScreenKeyboard
+              value={name}
+              onChange={handleNameChange}
+              onClose={() => setShowKeyboard(false)}
+            />
+          </>
         )}
       </AnimatePresence>
     </div>

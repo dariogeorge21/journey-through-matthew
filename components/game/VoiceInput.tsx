@@ -6,9 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 interface VoiceInputProps {
   onTranscribe: (text: string) => void;
   onError: (error: string) => void;
+  onShowKeyboard?: () => void;
 }
 
-export default function VoiceInput({ onTranscribe, onError }: VoiceInputProps) {
+export default function VoiceInput({ onTranscribe, onError, onShowKeyboard }: VoiceInputProps) {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [hasError, setHasError] = useState(false);
@@ -79,23 +80,29 @@ export default function VoiceInput({ onTranscribe, onError }: VoiceInputProps) {
     }
   };
 
+  const handleShowKeyboard = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onShowKeyboard) {
+      onShowKeyboard();
+    } else {
+      // Fallback: try to scroll to keyboard if it exists
+      const keyboard = document.getElementById("on-screen-keyboard");
+      if (keyboard) {
+        keyboard.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   if (hasError) {
     return (
       <div className="text-center">
         <p className="text-red-400 mb-4">Voice input is not available</p>
-        <a
-          href="#keyboard"
+        <button
+          onClick={handleShowKeyboard}
           className="text-blue-400 hover:text-blue-300 underline"
-          onClick={(e) => {
-            e.preventDefault();
-            const keyboard = document.getElementById("on-screen-keyboard");
-            if (keyboard) {
-              keyboard.scrollIntoView({ behavior: "smooth" });
-            }
-          }}
         >
           Use On-Screen Keyboard
-        </a>
+        </button>
       </div>
     );
   }
@@ -152,19 +159,12 @@ export default function VoiceInput({ onTranscribe, onError }: VoiceInputProps) {
         </motion.p>
       )}
 
-      <a
-        href="#keyboard"
+      <button
+        onClick={handleShowKeyboard}
         className="text-blue-400 hover:text-blue-300 underline text-sm mt-2"
-        onClick={(e) => {
-          e.preventDefault();
-          const keyboard = document.getElementById("on-screen-keyboard");
-          if (keyboard) {
-            keyboard.scrollIntoView({ behavior: "smooth" });
-          }
-        }}
       >
         Use On-Screen Keyboard
-      </a>
+      </button>
     </div>
   );
 }
