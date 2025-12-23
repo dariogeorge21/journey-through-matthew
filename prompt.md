@@ -66,9 +66,11 @@ After submission:
 
 * Score calculation:
 
-  * Accuracy (100% correct = 1000 points)
-  * Time taken (less time = more points)
-  * Total score = accuracy + time taken
+  * **Accuracy** (100% correct = 1000 points)
+  * **Time taken** (less time = more points, scaled appropriately)
+  * **Tie-breaker**: In case of identical total scores, use the timestamp of completion (earlier completion wins)
+  * **Total score** = accuracy points + time bonus points
+  * **Note**: The scoring formula should be designed to make ties statistically unlikely by using fine-grained time measurements (e.g., milliseconds) and a continuous scoring function for time rather than discrete intervals
 
 ---
 
