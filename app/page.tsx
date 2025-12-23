@@ -201,10 +201,15 @@ export default function LandingPage() {
           transition={{ duration: 1, delay: 1.2 }}
           className="absolute bottom-8 w-full text-center"
         >
-          <div className="inline-block px-6 py-2 rounded-full border border-white/5 bg-white/5 backdrop-blur-sm">
-            <p className="text-xs md:text-sm text-slate-500 font-medium">
-              An educational and spiritual experience for the <span className="text-blue-400/80">Jaago Event</span>
-            </p>
+          <div className="flex flex-col items-center gap-4">
+            <motion.button
+              onClick={() => router.push("/leaderboard")}
+              className="px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all text-sm font-medium"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              🏆 View Leaderboard
+            </motion.button>
           </div>
         </motion.footer>
       </div>

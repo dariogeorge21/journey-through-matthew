@@ -228,6 +228,13 @@ export default function ResultsPage() {
                 Restart the Pilgrimage
                 </Button>
              </div>
+             <Button 
+                variant="secondary"
+                onClick={() => router.push("/leaderboard")}
+                className="w-full py-6 text-lg font-semibold"
+             >
+                🏆 View Leaderboard
+             </Button>
           </motion.div>
         </div>
       </motion.div>
