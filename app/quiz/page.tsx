@@ -7,7 +7,52 @@ import { useGameState } from "@/hooks/useGameState";
 import { questions } from "@/lib/questions";
 import { QuestionAnswer } from "@/types/game";
 
-const QUESTION_TIME_LIMIT = 30; // seconds
+const QUESTION_TIME_LIMIT = 30;
+
+// --- Sub-components for a cleaner UI ---
+
+const TimerCircle = ({ timeLeft }: { timeLeft: number }) => {
+  const percentage = (timeLeft / QUESTION_TIME_LIMIT) * 100;
+  const isUrgent = timeLeft <= 10;
+
+  return (
+    <div className="relative flex items-center justify-center w-24 h-24">
+      <svg className="w-full h-full transform -rotate-90">
+        <circle
+          cx="48"
+          cy="48"
+          r="44"
+          stroke="currentColor"
+          strokeWidth="4"
+          fill="transparent"
+          className="text-white/5"
+        />
+        <motion.circle
+          cx="48"
+          cy="48"
+          r="44"
+          stroke="currentColor"
+          strokeWidth="4"
+          fill="transparent"
+          strokeDasharray="276.46" // 2 * pi * r
+          initial={{ strokeDashoffset: 0 }}
+          animate={{ strokeDashoffset: 276.46 - (276.46 * percentage) / 100 }}
+          transition={{ duration: 1, ease: "linear" }}
+          className={isUrgent ? "text-red-500" : "text-blue-500"}
+          style={{ filter: `drop-shadow(0 0 8px ${isUrgent ? "#ef4444" : "#3b82f6"})` }}
+        />
+      </svg>
+      <motion.span 
+        key={timeLeft}
+        initial={{ scale: 1.2, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className={`absolute text-3xl font-black font-mono ${isUrgent ? "text-red-500" : "text-white"}`}
+      >
+        {timeLeft}
+      </motion.span>
+    </div>
+  );
+};
 
 export default function QuizPage() {
   const router = useRouter();
@@ -24,19 +69,16 @@ export default function QuizPage() {
   const [isAnswered, setIsAnswered] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [startTime, setStartTime] = useState(Date.now());
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
-  // Safety check: ensure currentQuestion exists and has valid data
-  if (!currentQuestion || typeof currentQuestion.correctAnswer !== 'number') {
+  if (!currentQuestion) {
     return <div className="min-h-screen bg-black flex items-center justify-center text-white">Error loading question</div>;
   }
 
   useEffect(() => {
-    setStartTime(Date.now());
     setTimeLeft(QUESTION_TIME_LIMIT);
     setSelectedAnswer(null);
     setIsAnswered(false);
@@ -45,41 +87,28 @@ export default function QuizPage() {
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          handleAnswer(-1); // Timeout - no answer selected
+          handleAnswer(-1);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [currentQuestionIndex]);
 
   const handleAnswer = (answerIndex: number) => {
     if (isAnswered) return;
-    if (!currentQuestion) return;
-
     const timeSpent = QUESTION_TIME_LIMIT - timeLeft;
-    // Ensure both values are numbers and compare strictly
-    const correctAnswerIndex = Number(currentQuestion.correctAnswer);
-    const selectedIndex = Number(answerIndex);
-    // Use strict equality to ensure exact match
-    const correct = selectedIndex === correctAnswerIndex && !isNaN(selectedIndex) && !isNaN(correctAnswerIndex);
+    const correct = Number(answerIndex) === Number(currentQuestion.correctAnswer);
     
-    setSelectedAnswer(selectedIndex);
+    setSelectedAnswer(answerIndex);
     setIsAnswered(true);
     setIsCorrect(correct);
     setShowFeedback(true);
 
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
+    if (timerRef.current) clearInterval(timerRef.current);
 
-    // Record answer
     const questionAnswer: QuestionAnswer = {
       questionId: currentQuestion.id,
       selectedAnswer: answerIndex,
@@ -90,131 +119,161 @@ export default function QuizPage() {
     addAnswer(questionAnswer);
     addQuestionTime(timeSpent || QUESTION_TIME_LIMIT);
 
-    // Show feedback for 500ms, then advance
     setTimeout(() => {
       setShowFeedback(false);
-      
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       } else {
-        // Game complete
         setGameComplete(true);
         router.push("/verify");
       }
-    }, 500);
-  };
-
-  const getAnswerLabel = (index: number) => {
-    return String.fromCharCode(65 + index); // A, B, C, D
+    }, 800); // Slightly longer feedback for visual polish
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4">
-      {/* Progress Bar */}
-      <div className="max-w-4xl mx-auto mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-gray-400 text-sm">
-            Level {currentQuestionIndex + 1} of {questions.length}
-          </span>
-          <span className="text-gray-400 text-sm">
-            {currentQuestion.reference}
-          </span>
-        </div>
-        <div className="w-full bg-gray-800 rounded-full h-2">
-          <motion.div
-            className="bg-blue-600 h-2 rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.3 }}
-          />
-        </div>
+    <div className="min-h-screen bg-[#05070A] text-slate-100 relative overflow-hidden flex flex-col">
+      {/* Background Atmosphere */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-blue-600/10 blur-[120px]" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')] opacity-20 mix-blend-overlay" />
       </div>
 
-      {/* Timer */}
-      <div className="max-w-4xl mx-auto mb-8 text-center">
-        <motion.div
-          key={timeLeft}
-          initial={{ scale: 1.2 }}
-          animate={{ scale: 1 }}
-          className={`text-4xl font-bold font-mono ${
-            timeLeft <= 10 ? "text-red-500" : "text-blue-500"
-          }`}
-        >
-          {timeLeft}s
-        </motion.div>
-      </div>
-
-      {/* Question Card */}
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          key={currentQuestionIndex}
-          initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -100 }}
-          className="bg-gray-800 rounded-2xl p-8 md:p-12 mb-8"
-        >
-          <h2 className="text-gray-400 text-sm mb-4 font-semibold">
-            {currentQuestion.event}
-          </h2>
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-12 leading-relaxed">
-            {currentQuestion.question}
-          </h1>
-
-          <div className="space-y-4">
-            {currentQuestion.options.map((option, index) => {
-              const optionIndex = Number(index);
-              const isSelected = selectedAnswer !== null && Number(selectedAnswer) === optionIndex;
-              // Ensure both values are numbers for comparison
-              const correctAnswerIndex = Number(currentQuestion.correctAnswer);
-              const isCorrectOption = optionIndex === correctAnswerIndex;
-              const showCorrect = isAnswered && isCorrectOption;
-
-              return (
-                <motion.button
-                  key={index}
-                  onClick={() => handleAnswer(index)}
-                  disabled={isAnswered}
-                  className={`w-full p-6 rounded-xl text-left font-semibold text-lg transition-all ${
-                    isAnswered
-                      ? "cursor-not-allowed"
-                      : "hover:scale-[1.02] cursor-pointer"
-                  } ${
-                    showCorrect
-                      ? "bg-green-600 text-white"
-                      : isSelected && !isCorrect
-                      ? "bg-red-600 text-white"
-                      : isSelected
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                  }`}
-                  whileHover={!isAnswered ? { scale: 1.02 } : {}}
-                  whileTap={!isAnswered ? { scale: 0.98 } : {}}
-                >
-                  <span className="font-bold mr-4">
-                    {getAnswerLabel(index)}.
-                  </span>
-                  {option}
-                </motion.button>
-              );
-            })}
+      <div className="relative z-10 flex-1 flex flex-col max-w-5xl mx-auto w-full px-6 py-8">
+        
+        {/* Top Header Section */}
+        <header className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
+          <div className="flex flex-col gap-2 w-full md:w-1/2">
+            <div className="flex justify-between items-end mb-1">
+              <span className="text-blue-400 font-mono text-xs tracking-widest uppercase">
+                Progress: Stage {currentQuestionIndex + 1}/{questions.length}
+              </span>
+              <span className="text-white/40 text-xs font-medium">
+                {Math.round(progress)}% Complete
+              </span>
+            </div>
+            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden backdrop-blur-sm border border-white/5">
+              <motion.div
+                className="h-full bg-gradient-to-r from-blue-600 to-indigo-400 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              />
+            </div>
           </div>
-        </motion.div>
+
+          <TimerCircle timeLeft={timeLeft} />
+
+          <div className="hidden md:block w-1/2 text-right">
+            <span className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-sm font-medium">
+              📖 {currentQuestion.reference}
+            </span>
+          </div>
+        </header>
+
+        {/* Main Content Area */}
+        <main className="flex-1 flex flex-col">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentQuestionIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.5 }}
+              className="flex-1 flex flex-col"
+            >
+              {/* Question Card */}
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl relative mb-8">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+                
+                <div className="inline-block px-3 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold tracking-widest uppercase mb-6">
+                  {currentQuestion.event}
+                </div>
+                
+                <h1 className="text-3xl md:text-4xl font-bold leading-tight md:leading-snug tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">
+                  {currentQuestion.question}
+                </h1>
+              </div>
+
+              {/* Options Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+                {currentQuestion.options.map((option, index) => {
+                  const isSelected = selectedAnswer === index;
+                  const isCorrectOption = index === Number(currentQuestion.correctAnswer);
+                  const showResult = isAnswered && isCorrectOption;
+                  const showWrong = isAnswered && isSelected && !isCorrect;
+
+                  return (
+                    <motion.button
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 + index * 0.1 }}
+                      onClick={() => handleAnswer(index)}
+                      disabled={isAnswered}
+                      className={`
+                        relative group p-6 rounded-2xl text-left transition-all duration-300 border-2
+                        ${isAnswered ? "cursor-default" : "cursor-pointer active:scale-95"}
+                        ${showResult 
+                            ? "bg-emerald-500/20 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.2)]" 
+                            : showWrong 
+                            ? "bg-rose-500/20 border-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.2)]"
+                            : isSelected
+                            ? "bg-blue-600 border-blue-400"
+                            : "bg-white/5 border-white/5 hover:border-white/20 hover:bg-white/[0.07]"
+                        }
+                      `}
+                    >
+                      <div className="flex items-center gap-4">
+                        <span className={`
+                          w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg border
+                          ${showResult ? "bg-emerald-500 border-emerald-400 text-white" : 
+                            showWrong ? "bg-rose-500 border-rose-400 text-white" :
+                            "bg-black/20 border-white/10 text-white/40 group-hover:text-white/80"}
+                        `}>
+                          {String.fromCharCode(65 + index)}
+                        </span>
+                        <span className={`text-lg font-semibold ${isAnswered && !isCorrectOption && !isSelected ? "opacity-40" : "opacity-100"}`}>
+                          {option}
+                        </span>
+                      </div>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </main>
+
+        {/* Mobile Footer Meta */}
+        <footer className="md:hidden flex justify-center py-4">
+           <span className="text-white/30 text-xs font-medium tracking-wide">
+             REF: {currentQuestion.reference}
+           </span>
+        </footer>
       </div>
 
-      {/* Screen Flash Feedback */}
+      {/* Screen Feedback Overlay */}
       <AnimatePresence>
         {showFeedback && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 pointer-events-none ${
-              isCorrect ? "flash-green" : "flash-red"
+            className={`fixed inset-0 z-50 pointer-events-none mix-blend-screen transition-colors duration-300 ${
+              isCorrect ? "bg-emerald-500/10" : "bg-rose-500/10"
             }`}
           />
         )}
       </AnimatePresence>
+
+      <style jsx global>{`
+        @keyframes flash-green {
+          0%, 100% { opacity: 0; }
+          50% { opacity: 0.2; }
+        }
+        .flash-green { animation: flash-green 0.5s ease-out; background: #10b981; }
+        .flash-red { animation: flash-green 0.5s ease-out; background: #f43f5e; }
+      `}</style>
     </div>
   );
 }
-
