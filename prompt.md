@@ -1,8 +1,4 @@
-Here is a **clean, complete, and ready-to-use enhanced prompt**, written as a **single unified build instruction** you can directly give to an AI or use as your master spec.
-
----
-
-## Complete Build Prompt: *Journey Through Matthew*
+## Complete Build Prompt: *Journey Through Matthew - Jaago*
 
 Build a **journey-based quiz game** titled **“Journey Through Matthew”**, designed for a church or faith-based event. The game narrates the **life of Jesus as presented in the Gospel of Matthew**, structured into **15 sequential levels**, each representing one key event from the Gospel in correct biblical order. Each level contains **one MCQ**, and players must answer correctly to progress forward. The final score is calculated using **accuracy + time taken**, making the game competitive and suitable for a **live leaderboard**.
 
