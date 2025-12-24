@@ -21,7 +21,7 @@ export default function LoadingScreen() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <LoadingSpinner message={messages[messageIndex]} size="lg" />
     </div>
   );

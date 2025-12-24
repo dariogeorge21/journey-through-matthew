@@ -17,13 +17,13 @@ export default function LoadingSpinner({ message, size = "md" }: LoadingSpinnerP
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <motion.div
-        className={`${sizes[size]} border-4 border-gray-700 border-t-blue-600 rounded-full`}
+        className={`${sizes[size]} border-4 border-white/10 border-t-blue-500 rounded-full`}
         animate={{ rotate: 360 }}
         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
       />
       {message && (
         <motion.p
-          className="text-gray-400 text-center"
+          className="text-slate-300 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}

@@ -12,7 +12,7 @@ import Button from "@/components/ui/Button";
 
 // --- Configuration ---
 const LOCATIONS = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh","Delhi", "Goa",
   "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala",
   "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland",
   "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
@@ -103,9 +103,9 @@ export default function RegisterPage() {
             >
               <div className="text-center space-y-2">
                 <motion.h1 className="text-4xl md:text-5xl font-black tracking-tighter bg-gradient-to-b from-white to-gray-500 bg-clip-text text-transparent">
-                  PILGRIM REGISTRATION
+                  REGISTER YOUR SOUL
                 </motion.h1>
-                <p className="text-blue-400/60 font-mono text-sm tracking-widest uppercase">Initializing Soul Archive...</p>
+                <p className="text-blue-400/60 font-mono text-sm tracking-widest uppercase">Jesus awaits your arrival</p>
               </div>
 
               <div className="bg-gray-900/40 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 shadow-2xl space-y-6">
@@ -163,7 +163,7 @@ export default function RegisterPage() {
                     onClick={handleSubmit}
                     className="w-full py-6 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black tracking-widest uppercase shadow-[0_10px_30px_rgba(37,99,235,0.3)] transition-all active:scale-95 disabled:opacity-20 disabled:grayscale"
                   >
-                    Confirm Credentials
+                    Move Forward
                   </Button>
                 </div>
               </div>
