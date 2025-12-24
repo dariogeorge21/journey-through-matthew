@@ -3,7 +3,6 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 
@@ -86,38 +85,18 @@ export default function LandingPage() {
       {/* 3. Main Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-16">
         
-        {/* Logo Section with Glassmorphism */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ 
-            duration: 1.2, 
-            ease: [0.16, 1, 0.3, 1] 
-          }}
-          className="relative group mb-12"
+        {/* Logo with Glow */}
+        <motion.div 
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="relative w-32 h-32 md:w-44 md:h-44 mb-8"
         >
-          {/* Outer Glow */}
-          <div className="absolute -inset-4 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all duration-700" />
-          
-          <div className="relative w-48 h-32 md:w-64 md:h-40 flex items-center justify-center bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-transparent" />
-            <Image
-              src="/jaago.png"
-              alt="Jaago Logo"
-              width={180}
-              height={180}
-              className="object-contain z-10 transition-transform duration-700 group-hover:scale-110"
-              priority
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = "none";
-                const parent = target.parentElement;
-                if (parent) {
-                  parent.innerHTML = '<div class="text-5xl font-black tracking-tighter text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">JAAGO</div>';
-                }
-              }}
-            />
-          </div>
+          <div className="absolute inset-0 bg-yellow-400/20 blur-3xl rounded-full" />
+          <img
+            src="/jaago.png"
+            alt="Jaago Logo"
+            className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+          />
         </motion.div>
 
         {/* Textual Content */}
