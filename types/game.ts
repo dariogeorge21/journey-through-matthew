@@ -6,6 +6,7 @@ export interface Question {
   options: string[];
   correctAnswer: string; // The actual answer text from the options array
   reference: string;
+  explanation: string; // Explanation of the correct answer
 }
 
 export interface QuestionAnswer {

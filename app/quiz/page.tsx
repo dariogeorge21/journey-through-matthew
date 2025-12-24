@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useGameState } from "@/hooks/useGameState";
 import { questions } from "@/lib/questions";
 import { QuestionAnswer } from "@/types/game";
+import AnswerExplanationModal from "@/components/quiz/AnswerExplanationModal";
 
 const QUESTION_TIME_LIMIT = 30;
 
@@ -69,6 +70,7 @@ export default function QuizPage() {
   const [isAnswered, setIsAnswered] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [showExplanationModal, setShowExplanationModal] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentQuestion = questions[currentQuestionIndex];
@@ -77,25 +79,6 @@ export default function QuizPage() {
   if (!currentQuestion) {
     return <div className="min-h-screen bg-black flex items-center justify-center text-white">Error loading question</div>;
   }
-
-  useEffect(() => {
-    setTimeLeft(QUESTION_TIME_LIMIT);
-    setSelectedAnswer(null);
-    setIsAnswered(false);
-    setShowFeedback(false);
-
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          handleAnswer("");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [currentQuestionIndex]);
 
   const handleAnswer = (answerText: string) => {
     if (isAnswered) return;
@@ -119,16 +102,43 @@ export default function QuizPage() {
     addAnswer(questionAnswer);
     addQuestionTime(timeSpent || QUESTION_TIME_LIMIT);
 
+    // Show feedback briefly, then show modal
     setTimeout(() => {
       setShowFeedback(false);
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-      } else {
-        setGameComplete(true);
-        router.push("/verify");
-      }
-    }, 800); // Slightly longer feedback for visual polish
+      setShowExplanationModal(true);
+    }, 800);
   };
+
+  const handleContinue = () => {
+    setShowExplanationModal(false);
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      setGameComplete(true);
+      router.push("/verify");
+    }
+  };
+
+  useEffect(() => {
+    setTimeLeft(QUESTION_TIME_LIMIT);
+    setSelectedAnswer(null);
+    setIsAnswered(false);
+    setShowFeedback(false);
+    setShowExplanationModal(false);
+
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          handleAnswer("");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentQuestionIndex]);
 
   return (
     <div className="min-h-screen bg-[#05070A] text-slate-100 relative overflow-hidden flex flex-col">
@@ -259,12 +269,21 @@ export default function QuizPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-50 pointer-events-none mix-blend-screen transition-colors duration-300 ${
+            className={`fixed inset-0 z-40 pointer-events-none mix-blend-screen transition-colors duration-300 ${
               isCorrect ? "bg-emerald-500/10" : "bg-rose-500/10"
             }`}
           />
         )}
       </AnimatePresence>
+
+      {/* Answer Explanation Modal */}
+      <AnswerExplanationModal
+        isOpen={showExplanationModal}
+        question={currentQuestion}
+        isCorrect={isCorrect}
+        onContinue={handleContinue}
+        isLastQuestion={currentQuestionIndex === questions.length - 1}
+      />
 
       <style jsx global>{`
         @keyframes flash-green {
