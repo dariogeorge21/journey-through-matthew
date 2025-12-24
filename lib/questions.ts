@@ -1,5 +1,6 @@
 import { Question } from "@/types/game";
 
+// Bible verses are from the New International Version (NIV) translation
 export const questions: Question[] = [
   {
     id: 1,
@@ -9,7 +10,8 @@ export const questions: Question[] = [
     options: ["Abraham", "David", "Jacob", "Eli"],
     correctAnswer: "Jacob",
     reference: "Matthew 1:16",
-    explanation: "St. Matthew's genealogy traces Jesus' lineage through Joseph, and specifically names Jacob as Joseph's father. This establishes the legal lineage of Jesus through the line of David."
+    explanation: "St. Matthew's genealogy traces Jesus' lineage through Joseph, and specifically names Jacob as Joseph's father. This establishes the legal lineage of Jesus through the line of David.",
+    verseText: "and Jacob the father of Joseph, the husband of Mary, and Mary was the mother of Jesus who is called the Messiah."
   },
   {
     id: 2,
@@ -19,7 +21,8 @@ export const questions: Question[] = [
     options: ["A newborn ruler", "A royal successor", "A rival king", "A foreign claimant"],
     correctAnswer: "A rival king",
     reference: "Matthew 2:3",
-    explanation: "When the Magi asked about the newborn king of the Jews, Herod was deeply troubled because he saw Jesus as a potential rival to his own throne. This fear led him to seek to eliminate the threat."
+    explanation: "When the Magi asked about the newborn king of the Jews, Herod was deeply troubled because he saw Jesus as a potential rival to his own throne. This fear led him to seek to eliminate the threat.",
+    verseText: "When King Herod heard this he was disturbed, and all Jerusalem with him."
   },
   {
     id: 3,
@@ -29,7 +32,8 @@ export const questions: Question[] = [
     options: ["The prophet", "The baptizer", "The forerunner", "The voice in the wilderness"],
     correctAnswer: "The voice in the wilderness",
     reference: "Matthew 3:3",
-    explanation: "John the Baptist identifies himself as 'the voice of one calling in the wilderness,' fulfilling the prophecy of Isaiah. He prepares the way for the Lord, calling people to repentance before the Messiah's arrival."
+    explanation: "John the Baptist identifies himself as 'the voice of one calling in the wilderness,' fulfilling the prophecy of Isaiah. He prepares the way for the Lord, calling people to repentance before the Messiah's arrival.",
+    verseText: "This is he who was spoken of through the prophet Isaiah: 'A voice of one calling in the wilderness, \"Prepare the way for the Lord, make straight paths for him.\"'"
   },
   {
     id: 4,
@@ -39,7 +43,8 @@ export const questions: Question[] = [
     options: ["To complete a prophetic message", "To fulfill a prophetic promise", "To carry out prophetic words", "To fulfill what was spoken through the prophet"],
     correctAnswer: "To fulfill what was spoken through the prophet",
     reference: "Matthew 4:14",
-    explanation: "Jesus moved to Capernaum to fulfill the prophecy of Isaiah, which foretold that the land of Zebulun and Naphtali would see a great light. This demonstrates how Jesus' actions align with God's prophetic word."
+    explanation: "Jesus moved to Capernaum to fulfill the prophecy of Isaiah, which foretold that the land of Zebulun and Naphtali would see a great light. This demonstrates how Jesus' actions align with God's prophetic word.",
+    verseText: "to fulfill what was said through the prophet Isaiah:"
   },
   {
     id: 5,
@@ -49,7 +54,8 @@ export const questions: Question[] = [
     options: ["Turning stones into bread", "Jumping from the temple", "Ruling earthly kingdoms", "Worship in exchange for all kingdoms"],
     correctAnswer: "Worship in exchange for all kingdoms",
     reference: "Matthew 4:8-9",
-    explanation: "The final temptation was the most profound: Satan offered Jesus all the kingdoms of the world if He would worship him. Jesus rejected this, declaring that only God is worthy of worship, showing His complete obedience to the Father."
+    explanation: "The final temptation was the most profound: Satan offered Jesus all the kingdoms of the world if He would worship him. Jesus rejected this, declaring that only God is worthy of worship, showing His complete obedience to the Father.",
+    verseText: "Again, the devil took him to a very high mountain and showed him all the kingdoms of the world and their splendor. 'All this I will give you,' he said, 'if you will bow down and worship me.'"
   },
   {
     id: 6,
@@ -59,7 +65,8 @@ export const questions: Question[] = [
     options: ["Healing on Sabbath", "Claiming authority", "Forgiving sins", "Ignoring the Law"],
     correctAnswer: "Forgiving sins",
     reference: "Matthew 9:3",
-    explanation: "The scribes accused Jesus of blasphemy because only God has the authority to forgive sins. By claiming this power, Jesus was asserting His divine nature, which the religious leaders saw as blasphemous."
+    explanation: "The scribes accused Jesus of blasphemy because only God has the authority to forgive sins. By claiming this power, Jesus was asserting His divine nature, which the religious leaders saw as blasphemous.",
+    verseText: "At this, some of the teachers of the law said to themselves, 'This fellow is blaspheming!'"
   },
   {
     id: 7,
@@ -69,7 +76,8 @@ export const questions: Question[] = [
     options: ["The people", "The land", "The kingdom", "The world"],
     correctAnswer: "The world",
     reference: "Matthew 13:38",
-    explanation: "In the Parable of the Weeds, Jesus explains that the field represents the world. The good seed represents the children of the kingdom, while the weeds represent the children of the evil one, showing that both exist together in the world until the final judgment."
+    explanation: "In the Parable of the Weeds, Jesus explains that the field represents the world. The good seed represents the children of the kingdom, while the weeds represent the children of the evil one, showing that both exist together in the world until the final judgment.",
+    verseText: "The field is the world, and the good seed stands for the people of the kingdom. The weeds are the people of the evil one,"
   },
   {
     id: 8,
@@ -79,7 +87,8 @@ export const questions: Question[] = [
     options: ["He withdraws to be alone", "He begins teaching them", "He has compassion on them", "He instructs the disciples"],
     correctAnswer: "He has compassion on them",
     reference: "Matthew 14:14",
-    explanation: "When Jesus saw the large crowd, He had compassion on them and healed their sick. This demonstrates Jesus' deep love and care for people, which moved Him to act on their behalf, leading to the miraculous feeding of the five thousand."
+    explanation: "When Jesus saw the large crowd, He had compassion on them and healed their sick. This demonstrates Jesus' deep love and care for people, which moved Him to act on their behalf, leading to the miraculous feeding of the five thousand.",
+    verseText: "When Jesus landed and saw a large crowd, he had compassion on them and healed their sick."
   },
   {
     id: 9,
@@ -89,7 +98,8 @@ export const questions: Question[] = [
     options: ["Ignore it", "Replace it", "Misread it", "Nullify it"],
     correctAnswer: "Nullify it",
     reference: "Matthew 15:6",
-    explanation: "Jesus rebukes the Pharisees for nullifying God's command for the sake of their tradition. They prioritized human traditions over God's direct commands, effectively making God's word of no effect through their man-made rules."
+    explanation: "Jesus rebukes the Pharisees for nullifying God's command for the sake of their tradition. They prioritized human traditions over God's direct commands, effectively making God's word of no effect through their man-made rules.",
+    verseText: "they are not to 'honor their father or mother' with it. Thus you nullify the word of God for the sake of your tradition."
   },
   {
     id: 10,
@@ -99,7 +109,8 @@ export const questions: Question[] = [
     options: ["A servant", "A disciple", "A child", "A poor man"],
     correctAnswer: "A child",
     reference: "Matthew 18:2",
-    explanation: "Jesus places a child among the disciples to teach about true greatness. He explains that unless they change and become like little children—humble, trusting, and dependent—they will never enter the kingdom of heaven. True greatness comes through humility."
+    explanation: "Jesus places a child among the disciples to teach about true greatness. He explains that unless they change and become like little children—humble, trusting, and dependent—they will never enter the kingdom of heaven. True greatness comes through humility.",
+    verseText: "He called a little child to him, and placed the child among them."
   },
   {
     id: 11,
@@ -109,7 +120,8 @@ export const questions: Question[] = [
     options: ["Peter, Andrew, James", "James, John, Andrew", "Peter, James, John", "James, John, Philip"],
     correctAnswer: "Peter, James, John",
     reference: "Matthew 17:1",
-    explanation: "Jesus took Peter, James, and John up a high mountain where He was transfigured before them. His face shone like the sun, and His clothes became white as light. These three disciples formed Jesus' inner circle and witnessed this revelation of His divine glory."
+    explanation: "Jesus took Peter, James, and John up a high mountain where He was transfigured before them. His face shone like the sun, and His clothes became white as light. These three disciples formed Jesus' inner circle and witnessed this revelation of His divine glory.",
+    verseText: "After six days Jesus took with him Peter, James and John the brother of James, and led them up a high mountain by themselves."
   },
   {
     id: 12,
@@ -119,7 +131,8 @@ export const questions: Question[] = [
     options: ["Temple destruction", "Law restoration", "Gospel preached to all nations", "Messiah's return"],
     correctAnswer: "Gospel preached to all nations",
     reference: "Matthew 24:14",
-    explanation: "Jesus teaches that the gospel of the kingdom must be preached in the whole world as a testimony to all nations before the end will come. This emphasizes the importance of the Great Commission and the global spread of the gospel message."
+    explanation: "Jesus teaches that the gospel of the kingdom must be preached in the whole world as a testimony to all nations before the end will come. This emphasizes the importance of the Great Commission and the global spread of the gospel message.",
+    verseText: "And this gospel of the kingdom will be preached in the whole world as a testimony to all nations, and then the end will come."
   },
   {
     id: 13,
@@ -129,7 +142,8 @@ export const questions: Question[] = [
     options: ["Stay awake", "Pray silently", "Watch and pray", "Follow Him"],
     correctAnswer: "Watch and pray",
     reference: "Matthew 26:41",
-    explanation: "In the Garden of Gethsemane, Jesus asks His disciples to watch and pray so they will not fall into temptation. This moment reveals Jesus' humanity as He faces the coming suffering, while also teaching the importance of spiritual vigilance."
+    explanation: "In the Garden of Gethsemane, Jesus asks His disciples to watch and pray so they will not fall into temptation. This moment reveals Jesus' humanity as He faces the coming suffering, while also teaching the importance of spiritual vigilance.",
+    verseText: "\"Watch and pray so that you will not fall into temptation. The spirit is willing, but the flesh is weak.\""
   },
   {
     id: 14,
@@ -139,7 +153,8 @@ export const questions: Question[] = [
     options: ["Tombs are opened", "An earthquake occurs", "Darkness covers the land", "Jesus cries out loudly"],
     correctAnswer: "Jesus cries out loudly",
     reference: "Matthew 27:46-50",
-    explanation: "At the moment of death, Jesus cried out loudly, 'My God, my God, why have you forsaken me?' This was followed by the temple curtain being torn, an earthquake, and tombs opening. His final cry demonstrates the depth of His sacrifice for humanity."
+    explanation: "At the moment of death, Jesus cried out loudly, 'My God, my God, why have you forsaken me?' This was followed by the temple curtain being torn, an earthquake, and tombs opening. His final cry demonstrates the depth of His sacrifice for humanity.",
+    verseText: "About three in the afternoon Jesus cried out in a loud voice, 'Eli, Eli, lema sabachthani?' (which means 'My God, my God, why have you forsaken me?'). When some of those standing there heard this, they said, 'He's calling Elijah.' Immediately one of them ran and got a sponge. He filled it with wine vinegar, put it on a staff, and offered it to Jesus to drink. The rest said, 'Now leave him alone. Let's see if Elijah comes to save him.' And when Jesus had cried out again in a loud voice, he gave up his spirit."
   },
   {
     id: 15,
@@ -149,7 +164,8 @@ export const questions: Question[] = [
     options: ["The disciples", "The Pharisees", "The teachers of the law", "The guards"],
     correctAnswer: "The guards",
     reference: "Matthew 28:12-13",
-    explanation: "The chief priests and elders bribed the guards who witnessed the empty tomb to spread a false story that the disciples had stolen Jesus' body while they slept. This attempt to discredit the resurrection shows the lengths to which some went to deny the truth."
+    explanation: "The chief priests and elders bribed the guards who witnessed the empty tomb to spread a false story that the disciples had stolen Jesus' body while they slept. This attempt to discredit the resurrection shows the lengths to which some went to deny the truth.",
+    verseText: "When the chief priests had met with the elders and devised a plan, they gave the soldiers a large sum of money, telling them, 'You are to say, \"His disciples came during the night and stole him away while we were asleep.\"'"
   },
   {
     id: 16,
@@ -159,7 +175,8 @@ export const questions: Question[] = [
     options: ["Stay in Jerusalem", "Restore Israel", "Teach the Law", "Make disciples of all nations"],
     correctAnswer: "Make disciples of all nations",
     reference: "Matthew 28:19",
-    explanation: "Jesus' final command is the Great Commission: to go and make disciples of all nations, baptizing them and teaching them to obey everything He commanded. This mission extends the gospel to the entire world, not just Israel, establishing the universal scope of God's kingdom."
+    explanation: "Jesus' final command is the Great Commission: to go and make disciples of all nations, baptizing them and teaching them to obey everything He commanded. This mission extends the gospel to the entire world, not just Israel, establishing the universal scope of God's kingdom.",
+    verseText: "Therefore go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit,"
   }
 ];
 

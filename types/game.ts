@@ -7,6 +7,7 @@ export interface Question {
   correctAnswer: string; // The actual answer text from the options array
   reference: string;
   explanation: string; // Explanation of the correct answer
+  verseText: string; // The actual Bible verse text (NIV translation)
 }
 
 export interface QuestionAnswer {

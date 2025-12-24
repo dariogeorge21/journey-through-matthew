@@ -129,9 +129,9 @@ export default function AnswerExplanationModal({
 
               {/* Bible Reference */}
               <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 mb-6">
-                <div className="flex items-center gap-3">
+                <div className="flex items-start gap-3 mb-3">
                   <svg
-                    className="w-6 h-6 text-blue-400 flex-shrink-0"
+                    className="w-6 h-6 text-blue-400 flex-shrink-0 mt-1"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -143,13 +143,21 @@ export default function AnswerExplanationModal({
                       d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                     />
                   </svg>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-1">
                       Bible Reference
                     </p>
-                    <p className="text-white font-semibold text-lg">
+                    <p className="text-white font-semibold text-lg mb-3">
                       {question.reference}
                     </p>
+                    <div className="pt-3 border-t border-blue-500/20">
+                      <p className="text-slate-200 leading-relaxed text-base italic">
+                        "{question.verseText}"
+                      </p>
+                      <p className="text-blue-400/60 text-xs mt-2 font-medium">
+                        New International Version (NIV)
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
