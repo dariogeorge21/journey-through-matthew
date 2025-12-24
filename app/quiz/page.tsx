@@ -65,7 +65,7 @@ export default function QuizPage() {
   } = useGameState();
 
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME_LIMIT);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -87,7 +87,7 @@ export default function QuizPage() {
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          handleAnswer(-1);
+          handleAnswer("");
           return 0;
         }
         return prev - 1;
@@ -97,12 +97,12 @@ export default function QuizPage() {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [currentQuestionIndex]);
 
-  const handleAnswer = (answerIndex: number) => {
+  const handleAnswer = (answerText: string) => {
     if (isAnswered) return;
     const timeSpent = QUESTION_TIME_LIMIT - timeLeft;
-    const correct = Number(answerIndex) === Number(currentQuestion.correctAnswer);
+    const correct = answerText === currentQuestion.correctAnswer;
     
-    setSelectedAnswer(answerIndex);
+    setSelectedAnswer(answerText);
     setIsAnswered(true);
     setIsCorrect(correct);
     setShowFeedback(true);
@@ -111,7 +111,7 @@ export default function QuizPage() {
 
     const questionAnswer: QuestionAnswer = {
       questionId: currentQuestion.id,
-      selectedAnswer: answerIndex,
+      selectedAnswer: answerText,
       isCorrect: correct,
       timeSpent: timeSpent || QUESTION_TIME_LIMIT,
     };
@@ -197,8 +197,8 @@ export default function QuizPage() {
               {/* Options Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
                 {currentQuestion.options.map((option, index) => {
-                  const isSelected = selectedAnswer === index;
-                  const isCorrectOption = index === Number(currentQuestion.correctAnswer);
+                  const isSelected = selectedAnswer === option;
+                  const isCorrectOption = option === currentQuestion.correctAnswer;
                   const showResult = isAnswered && isCorrectOption;
                   const showWrong = isAnswered && isSelected && !isCorrect;
 
@@ -208,7 +208,7 @@ export default function QuizPage() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.2 + index * 0.1 }}
-                      onClick={() => handleAnswer(index)}
+                      onClick={() => handleAnswer(option)}
                       disabled={isAnswered}
                       className={`
                         relative group p-6 rounded-2xl text-left transition-all duration-300 border-2

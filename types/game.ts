@@ -4,13 +4,13 @@ export interface Question {
   event: string;
   question: string;
   options: string[];
-  correctAnswer: number; // 0-indexed
+  correctAnswer: string; // The actual answer text from the options array
   reference: string;
 }
 
 export interface QuestionAnswer {
   questionId: number;
-  selectedAnswer: number;
+  selectedAnswer: string; // The actual answer text from the options array
   isCorrect: boolean;
   timeSpent: number; // in seconds
 }
