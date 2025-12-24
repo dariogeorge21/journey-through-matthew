@@ -5,7 +5,7 @@ export const questions: Question[] = [
     id: 1,
     level: 1,
     event: "Genealogy",
-    question: "Who is named as Joseph's father in Matthew's genealogy?",
+    question: "Who is named as Joseph's father in St. Matthew's genealogy?",
     options: ["Abraham", "David", "Jacob", "Eli"],
     correctAnswer: "Jacob",
     reference: "Matthew 1:16"
@@ -41,7 +41,7 @@ export const questions: Question[] = [
     id: 5,
     level: 5,
     event: "Temptation",
-    question: "Which temptation is presented LAST to Jesus in Matthew?",
+    question: "Which temptation is presented LAST to Jesus in St. Matthew?",
     options: ["Turning stones into bread", "Jumping from the temple", "Ruling earthly kingdoms", "Worship in exchange for all kingdoms"],
     correctAnswer: "Worship in exchange for all kingdoms",
     reference: "Matthew 4:8-9"
@@ -68,7 +68,7 @@ export const questions: Question[] = [
     id: 8,
     level: 8,
     event: "Compassion & Miracle",
-    question: "In Matthew 14, what does Jesus do first when He sees the large crowd?",
+    question: "In St. Matthew 14, what does Jesus do first when He sees the large crowd?",
     options: ["He withdraws to be alone", "He begins teaching them", "He has compassion on them", "He instructs the disciples"],
     correctAnswer: "He has compassion on them",
     reference: "Matthew 14:14"
@@ -77,7 +77,7 @@ export const questions: Question[] = [
     id: 9,
     level: 9,
     event: "Tradition vs Command",
-    question: "In Matthew 15, what do the Pharisees do to God's command?",
+    question: "In St. Matthew 15, what do the Pharisees do to God's command?",
     options: ["Ignore it", "Replace it", "Misread it", "Nullify it"],
     correctAnswer: "Nullify it",
     reference: "Matthew 15:6"
@@ -104,7 +104,7 @@ export const questions: Question[] = [
     id: 12,
     level: 12,
     event: "End-Time Teaching",
-    question: "According to Matthew 24, what must happen before the end comes?",
+    question: "According to St. Matthew 24, what must happen before the end comes?",
     options: ["Temple destruction", "Law restoration", "Gospel preached to all nations", "Messiah's return"],
     correctAnswer: "Gospel preached to all nations",
     reference: "Matthew 24:14"
@@ -122,7 +122,7 @@ export const questions: Question[] = [
     id: 14,
     level: 14,
     event: "Crucifixion",
-    question: "At the moment of Jesus' death, which event happens FIRST according to Matthew?",
+    question: "At the moment of Jesus' death, which event happens FIRST according to St. Matthew?",
     options: ["Tombs are opened", "An earthquake occurs", "Darkness covers the land", "Jesus cries out loudly"],
     correctAnswer: "Jesus cries out loudly",
     reference: "Matthew 27:46-50"
@@ -131,7 +131,7 @@ export const questions: Question[] = [
     id: 15,
     level: 15,
     event: "Resurrection",
-    question: "According to Matthew 28, who are bribed to spread a false report about Jesus' resurrection?",
+    question: "According to St. Matthew 28, who are bribed to spread a false report about Jesus' resurrection?",
     options: ["The disciples", "The Pharisees", "The teachers of the law", "The guards"],
     correctAnswer: "The guards",
     reference: "Matthew 28:12-13"

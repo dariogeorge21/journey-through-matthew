@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Journey Through Matthew - Jaago",
-  description: "A biblical quiz experience following Jesus's journey through the Gospel of Matthew",
+  title: "Journey Through St. Matthew - Jaago",
+  description: "A biblical quiz experience following Jesus's journey through the Gospel of St. Matthew",
 };
 
 export default function RootLayout({

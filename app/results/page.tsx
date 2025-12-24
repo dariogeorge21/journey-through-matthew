@@ -140,7 +140,7 @@ export default function ResultsPage() {
             <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-2">
               Well Done, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">{playerName}</span>
             </h1>
-            <p className="text-slate-400 font-medium tracking-wide">Your pilgrimage through Matthew is complete.</p>
+            <p className="text-slate-400 font-medium tracking-wide">Your pilgrimage through St. Matthew is complete.</p>
           </header>
 
           {/* Main Score Podium */}
@@ -208,7 +208,7 @@ export default function ResultsPage() {
 
           {/* Achievement Tagline */}
           <div className="mb-6 text-slate-500 text-sm max-w-2xl mx-auto">
-            <p>You have successfully chronicled 15 key events in the Gospel of Matthew. Your spiritual record has been preserved in the Sanctum.</p>
+            <p>You have successfully chronicled 15 key events in the Gospel of St. Matthew. Your spiritual record has been preserved in the Sanctum.</p>
           </div>
 
           {/* Final Action */}

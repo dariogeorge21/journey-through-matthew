@@ -113,8 +113,8 @@ export default function LandingPage() {
               Journey Through
             </span>
             <br />
-            <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 bg-clip-text text-transparent drop-shadow-sm">
-              Matthew
+            <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 bg-clip-text text-transparent drop-shadow-sm mt-2 block">
+              St. Matthew
             </span>
           </motion.h1>
 
@@ -132,7 +132,7 @@ export default function LandingPage() {
           </motion.div>
 
           <p className="text-lg md:text-xl text-slate-400 mb-12 leading-relaxed max-w-2xl mx-auto font-light">
-            Embark on a spiritual journey through the Gospel of Matthew. 
+            Embark on a spiritual journey through the Gospel of St. Matthew. 
             Follow the life of Jesus through <span className="text-slate-200 font-semibold">15 key events</span>, 
             test your knowledge, and discover the timeless wisdom of Scripture.
           </p>

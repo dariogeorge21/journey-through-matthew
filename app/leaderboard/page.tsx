@@ -87,7 +87,7 @@ export default function LeaderboardPage() {
                 </span>
               </h1>
               <p className="text-slate-400 font-medium">
-                The greatest pilgrims through Matthew's Gospel
+                The greatest pilgrims through St. Matthew's Gospel
               </p>
             </div>
 
