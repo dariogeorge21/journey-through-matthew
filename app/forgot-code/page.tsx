@@ -61,9 +61,9 @@ export default function ForgotCodePage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="max-w-3xl w-full z-10"
+        className="max-w-5xl w-full z-10"
       >
-        <div className="text-center mb-10">
+        <div className="text-center mb-6">
           <motion.div
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -77,7 +77,7 @@ export default function ForgotCodePage() {
           <p className="text-slate-400 mt-4 text-lg italic">Recite five Hail Marys to restore your journey.</p>
         </div>
 
-        <div className="space-y-4 mb-10">
+        <div className="space-y-3 mb-6">
           {checkedBoxes.map((isChecked, index) => (
             <motion.div
               key={index}
@@ -91,7 +91,7 @@ export default function ForgotCodePage() {
                   : "bg-white/5 border-white/10 hover:border-white/20"
               }`}
             >
-              <div className="p-6 flex items-start gap-6 relative z-10">
+              <div className="p-4 flex items-start gap-4 relative z-10">
                 {/* Votive Checkbox Icon */}
                 <div className="relative mt-1">
                   <motion.div
@@ -155,7 +155,7 @@ export default function ForgotCodePage() {
         </div>
 
         {/* Progress System */}
-        <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+        <div className="bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10">
           <div className="flex justify-between items-end mb-4">
             <div>
               <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Redemption Progress</p>

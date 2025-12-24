@@ -79,13 +79,13 @@ export default function VerifyPage() {
           x: isShaking ? [-10, 10, -10, 10, 0] : 0
         }}
         transition={{ duration: 0.5 }}
-        className="max-w-md w-full z-10"
+        className="max-w-2xl w-full z-10"
       >
-        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-6 md:p-8 shadow-2xl relative overflow-hidden">
           {/* Decorative Scanline */}
           <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent h-1/2 pointer-events-none animate-pulse" />
           
-          <div className="text-center mb-10">
+          <div className="text-center mb-6">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -100,7 +100,7 @@ export default function VerifyPage() {
           </div>
 
           {/* 2. Code Input Display */}
-          <div className="flex justify-between gap-2 mb-10">
+          <div className="flex justify-between gap-2 mb-6">
             {[0, 1, 2, 3, 4, 5].map((index) => (
               <motion.div
                 key={index}

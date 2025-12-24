@@ -138,10 +138,10 @@ export default function QuizPage() {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')] opacity-20 mix-blend-overlay" />
       </div>
 
-      <div className="relative z-10 flex-1 flex flex-col max-w-5xl mx-auto w-full px-6 py-8">
+      <div className="relative z-10 flex-1 flex flex-col max-w-7xl mx-auto w-full px-8 py-6">
         
         {/* Top Header Section */}
-        <header className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
+        <header className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
           <div className="flex flex-col gap-2 w-full md:w-1/2">
             <div className="flex justify-between items-end mb-1">
               <span className="text-blue-400 font-mono text-xs tracking-widest uppercase">
@@ -182,10 +182,10 @@ export default function QuizPage() {
               className="flex-1 flex flex-col"
             >
               {/* Question Card */}
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl relative mb-8">
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl relative mb-6">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
                 
-                <div className="inline-block px-3 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold tracking-widest uppercase mb-6">
+                <div className="inline-block px-3 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold tracking-widest uppercase mb-4">
                   {currentQuestion.event}
                 </div>
                 
@@ -195,7 +195,7 @@ export default function QuizPage() {
               </div>
 
               {/* Options Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 {currentQuestion.options.map((option, index) => {
                   const isSelected = selectedAnswer === option;
                   const isCorrectOption = option === currentQuestion.correctAnswer;
@@ -211,7 +211,7 @@ export default function QuizPage() {
                       onClick={() => handleAnswer(option)}
                       disabled={isAnswered}
                       className={`
-                        relative group p-6 rounded-2xl text-left transition-all duration-300 border-2
+                        relative group p-5 rounded-2xl text-left transition-all duration-300 border-2
                         ${isAnswered ? "cursor-default" : "cursor-pointer active:scale-95"}
                         ${showResult 
                             ? "bg-emerald-500/20 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.2)]" 

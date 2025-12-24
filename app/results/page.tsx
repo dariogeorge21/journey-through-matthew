@@ -121,13 +121,13 @@ export default function ResultsPage() {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-3xl w-full z-10"
+        className="max-w-6xl w-full z-10"
       >
-        <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-8 md:p-14 text-center shadow-2xl relative">
+        <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-6 md:p-10 text-center shadow-2xl relative">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
           
           {/* Header */}
-          <header className="mb-10">
+          <header className="mb-6">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -144,8 +144,8 @@ export default function ResultsPage() {
           </header>
 
           {/* Main Score Podium */}
-          <section className="mb-12 relative">
-            <div className="relative inline-block px-12 py-10 rounded-3xl bg-gradient-to-b from-white/[0.08] to-transparent border border-white/10 overflow-hidden">
+          <section className="mb-8 relative">
+            <div className="relative inline-block px-16 py-6 rounded-3xl bg-gradient-to-b from-white/[0.08] to-transparent border border-white/10 overflow-hidden">
                {/* Internal Glow */}
                <div className="absolute inset-0 bg-blue-500/5 blur-3xl" />
                
@@ -196,7 +196,7 @@ export default function ResultsPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5 }}
-            className="bg-gradient-to-b from-blue-600/10 to-transparent border border-blue-500/20 rounded-3xl p-8 mb-10 relative"
+            className="bg-gradient-to-b from-blue-600/10 to-transparent border border-blue-500/20 rounded-3xl p-6 mb-6 relative"
           >
             <svg className="absolute top-4 left-4 w-8 h-8 text-blue-500/20" fill="currentColor" viewBox="0 0 24 24">
               <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C14.9124 8 14.017 7.10457 14.017 6V3L21.017 3V15C21.017 18.3137 18.3307 21 15.017 21H14.017ZM3.017 21L3.017 18C3.017 16.8954 3.91243 16 5.017 16H8.017C8.56928 16 9.017 15.5523 9.017 15V9C9.017 8.44772 8.56928 8 8.017 8H5.017C3.91243 8 3.017 7.10457 3.017 6V3L10.017 3V15C10.017 18.3137 7.33072 21 4.017 21H3.017Z" />
@@ -207,7 +207,7 @@ export default function ResultsPage() {
           </motion.div>
 
           {/* Achievement Tagline */}
-          <div className="mb-10 text-slate-500 text-sm max-w-md mx-auto">
+          <div className="mb-6 text-slate-500 text-sm max-w-2xl mx-auto">
             <p>You have successfully chronicled 15 key events in the Gospel of Matthew. Your spiritual record has been preserved in the Sanctum.</p>
           </div>
 

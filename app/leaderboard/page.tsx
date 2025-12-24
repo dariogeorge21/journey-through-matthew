@@ -74,7 +74,7 @@ export default function LeaderboardPage() {
 
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Header Section */}
-        <header className="max-w-6xl mx-auto w-full px-6 pt-12 pb-8">
+        <header className="max-w-7xl mx-auto w-full px-8 pt-8 pb-6">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -126,7 +126,7 @@ export default function LeaderboardPage() {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 max-w-6xl mx-auto w-full px-6 pb-12">
+        <main className="flex-1 max-w-7xl mx-auto w-full px-8 pb-8">
           {isLoading && leaderboard.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24">
               <div className="relative w-24 h-24 mb-8">
@@ -146,7 +146,7 @@ export default function LeaderboardPage() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-8 text-center"
+              className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-6 text-center"
             >
               <p className="text-rose-400 font-semibold mb-2">Error Loading Leaderboard</p>
               <p className="text-slate-400 text-sm">{error}</p>
@@ -162,7 +162,7 @@ export default function LeaderboardPage() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-12 text-center"
+              className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-center"
             >
               <p className="text-slate-400 text-lg mb-4">No pilgrims have completed the journey yet.</p>
               <Button
@@ -186,7 +186,7 @@ export default function LeaderboardPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className={`relative bg-gradient-to-b ${getRankColor(actualRank)} backdrop-blur-xl border rounded-2xl p-6 ${
+                        className={`relative bg-gradient-to-b ${getRankColor(actualRank)} backdrop-blur-xl border rounded-2xl p-5 ${
                           isCenter ? "md:scale-110 md:z-10" : ""
                         }`}
                       >
@@ -214,7 +214,7 @@ export default function LeaderboardPage() {
 
               {/* Rest of Leaderboard */}
               <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
-                <div className="p-6 border-b border-white/5">
+                <div className="p-5 border-b border-white/5">
                   <h2 className="text-xl font-bold text-white">Complete Rankings</h2>
                 </div>
                 <div className="divide-y divide-white/5">
@@ -230,7 +230,7 @@ export default function LeaderboardPage() {
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 20 }}
                           transition={{ delay: isTopThree ? 0.3 + (index - 3) * 0.02 : index * 0.02 }}
-                          className={`p-6 hover:bg-white/[0.03] transition-colors ${
+                          className={`p-5 hover:bg-white/[0.03] transition-colors ${
                             isTopThree ? "bg-gradient-to-r from-white/[0.02] to-transparent" : ""
                           }`}
                         >
@@ -292,7 +292,7 @@ export default function LeaderboardPage() {
         </main>
 
         {/* Footer */}
-        <footer className="max-w-6xl mx-auto w-full px-6 pb-8">
+        <footer className="max-w-7xl mx-auto w-full px-8 pb-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

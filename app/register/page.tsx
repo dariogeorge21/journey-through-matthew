@@ -99,7 +99,7 @@ export default function RegisterPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, y: -20 }}
-              className="w-full max-w-2xl space-y-8"
+              className="w-full max-w-5xl space-y-6"
             >
               <div className="text-center space-y-2">
                 <motion.h1 className="text-4xl md:text-5xl font-black tracking-tighter bg-gradient-to-b from-white to-gray-500 bg-clip-text text-transparent">
@@ -108,7 +108,7 @@ export default function RegisterPage() {
                 <p className="text-blue-400/60 font-mono text-sm tracking-widest uppercase">Initializing Soul Archive...</p>
               </div>
 
-              <div className="bg-gray-900/40 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 shadow-2xl space-y-10">
+              <div className="bg-gray-900/40 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 shadow-2xl space-y-6">
                 {/* Voice & Name Section */}
                 <section className="space-y-6">
                   <div className="flex flex-col items-center space-y-4">
@@ -189,7 +189,7 @@ export default function RegisterPage() {
           {step === "code" && (
             <motion.div key="code" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="text-center space-y-6">
               <div className="p-1 rounded-3xl bg-gradient-to-b from-blue-500 to-purple-600 shadow-[0_0_50px_rgba(59,130,246,0.3)]">
-                <div className="bg-[#05070A] rounded-[22px] px-12 py-16 space-y-4">
+                <div className="bg-[#05070A] rounded-[22px] px-16 py-10 space-y-4">
                   <p className="text-gray-500 text-xs font-mono uppercase tracking-[0.4em]">Unique Security Key</p>
                   <h2 className="text-7xl md:text-8xl font-black text-white font-mono tracking-tighter">
                     {securityCode}
