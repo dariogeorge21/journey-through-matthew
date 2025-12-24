@@ -177,35 +177,35 @@ export default function ForgotCodePage() {
         </div>
 
         {/* Continue Button */}
-        <motion.div
-          className="mt-8"
-          initial={false}
-          animate={{ opacity: allChecked ? 1 : 0.4, y: allChecked ? 0 : 10 }}
-        >
-          <div className="relative group">
-            <AnimatePresence>
-              {allChecked && (
+        <AnimatePresence>
+          {allChecked && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mt-8"
+            >
+              <div className="relative group">
+                {/* Glow effect */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl blur-lg opacity-40 group-hover:opacity-100 transition duration-1000"
+                  className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-400 rounded-2xl blur-xl opacity-60 group-hover:opacity-100 transition duration-1000"
                 />
-              )}
-            </AnimatePresence>
-            <Button
-              size="lg"
-              onClick={handleContinue}
-              disabled={!allChecked}
-              className={`w-full py-8 text-xl font-bold tracking-widest uppercase transition-all duration-500 ${
-                allChecked 
-                  ? "bg-blue-600 hover:bg-blue-500 text-white shadow-2xl" 
-                  : "bg-slate-800 text-slate-500 border border-white/5"
-              }`}
-            >
-              {allChecked ? "Continue to Results" : "Complete the Penance"}
-            </Button>
-          </div>
-        </motion.div>
+                <motion.button
+                  onClick={handleContinue}
+                  disabled={!allChecked}
+                  className="relative w-full py-7 rounded-2xl text-xl font-black tracking-widest uppercase text-white transition-all duration-500 bg-gradient-to-r from-blue-600 to-indigo-400 shadow-[0_0_30px_rgba(59,130,246,0.5)] hover:shadow-[0_0_40px_rgba(59,130,246,0.7)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  whileHover={allChecked ? { scale: 1.02 } : {}}
+                  whileTap={allChecked ? { scale: 0.98 } : {}}
+                >
+                  Continue to Results
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
       
       {/* Global CSS for the serif font styling */}
