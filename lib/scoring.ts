@@ -1,5 +1,43 @@
-import { QuestionAnswer } from "@/types/game";
+// lib/scoring.ts
 
+import { QuestionAnswer, Question } from "@/types/game";
+// Assuming you have exported 'allQuestions' from '@/lib/questions'
+import { allQuestions } from './questions'; 
+
+// Define the fixed length for the quiz
+const QUIZ_LENGTH = 15;
+
+/**
+ * Shuffles an array in place using the Fisher-Yates (Knuth) algorithm.
+ * @param array The array to shuffle.
+ */
+function shuffleArray<T>(array: T[]): T[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+/**
+ * Selects 15 unique questions randomly from the pool of 100.
+ * @returns An array of 15 random Question objects.
+ */
+export function getRandomQuizQuestions(): Question[] {
+  // 1. Create a shallow copy of the full question set (allQuestions)
+  const questionsCopy = [...allQuestions];
+
+  // 2. Shuffle the copy
+  const shuffledQuestions = shuffleArray(questionsCopy);
+
+  // 3. Select the first 15 questions for the quiz
+  return shuffledQuestions.slice(0, QUIZ_LENGTH);
+}
+
+/**
+ * Calculates the final score based on accuracy and time spent.
+ * The scoring is now fixed to a maximum of 15 questions.
+ */
 export function calculateScores(
   answers: QuestionAnswer[],
   questionTimes: number[]
@@ -8,26 +46,38 @@ export function calculateScores(
   timeBonusScore: number;
   finalScore: number;
 } {
-  const totalQuestions = answers.length;
-  const correctAnswers = answers.filter((a) => a.isCorrect).length;
+  // --- Fixed the total questions count to 15 (based on the new game flow) ---
+  const totalQuestions = QUIZ_LENGTH; 
+  
+  // Ensure we only process up to 15 answers/times
+  const processedAnswers = answers.slice(0, totalQuestions);
+  const processedTimes = questionTimes.slice(0, totalQuestions);
+  
+  const correctAnswers = processedAnswers.filter((a) => a.isCorrect).length;
 
-  // Accuracy scoring (out of 1000 points)
-  const accuracyScore = Math.round((correctAnswers / totalQuestions) * 1000);
+  // --- 1. Accuracy scoring (Max 1000 points) ---
+  // Points per correct answer: 1000 / 15 ≈ 66.67
+  const pointsPerCorrectAnswer = 1000 / totalQuestions; 
+  
+  const accuracyScore = Math.round(correctAnswers * pointsPerCorrectAnswer);
 
-  // Time bonus (diminishing returns, max 500 points per question)
-  const timeBonusScore = questionTimes.reduce((total, timeSpent, index) => {
-    const timeLeft = Math.max(0, 30 - timeSpent); // 30 seconds per question
-    const bonus = Math.min(500, timeLeft * 16.67); // Linear scaling: 30s = 500pts, 0s = 0pts
-    return total + bonus;
+  // --- 2. Time bonus calculation (Max 500 points per question, 7500 total) ---
+  const MAX_TIME_PER_QUESTION = 30; // seconds
+  const MAX_BONUS_PER_QUESTION = 500; 
+  const BONUS_RATE = MAX_BONUS_PER_QUESTION / MAX_TIME_PER_QUESTION; // 16.666... points/sec saved
+
+  const timeBonusScore = processedTimes.reduce((total, timeSpent) => {
+    const timeLeft = Math.max(0, MAX_TIME_PER_QUESTION - timeSpent);
+    const bonus = timeLeft * BONUS_RATE;
+    return total + bonus; 
   }, 0);
 
-  // Final score with millisecond precision for tie-breaking
+  // --- 3. Final score ---
   const finalScore = Math.round((accuracyScore + timeBonusScore) * 100) / 100;
 
   return {
     accuracyScore,
-    timeBonusScore: Math.round(timeBonusScore),
+    timeBonusScore: Math.round(timeBonusScore), // Round the bonus for integer display
     finalScore,
   };
 }
-

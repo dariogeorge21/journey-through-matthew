@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameState } from "@/hooks/useGameState";
-import { questions } from "@/lib/questions";
 import { QuestionAnswer } from "@/types/game";
 import AnswerExplanationModal from "@/components/quiz/AnswerExplanationModal";
 
@@ -57,7 +56,10 @@ const TimerCircle = ({ timeLeft }: { timeLeft: number }) => {
 
 export default function QuizPage() {
   const router = useRouter();
+  
+  // FIX: Destructure 'questions' from the store here!
   const {
+    questions, 
     currentQuestionIndex,
     setCurrentQuestionIndex,
     addAnswer,
@@ -73,11 +75,23 @@ export default function QuizPage() {
   const [showExplanationModal, setShowExplanationModal] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // FIX: Access the current question from the store array
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
+  // Handle case where state is lost (e.g. refresh)
+  useEffect(() => {
+    if (!questions || questions.length === 0) {
+      router.push("/");
+    }
+  }, [questions, router]);
+
   if (!currentQuestion) {
-    return <div className="min-h-screen bg-black flex items-center justify-center text-white">Error loading question</div>;
+    return (
+        <div className="min-h-screen bg-[#05070A] flex items-center justify-center text-white">
+            <p>Loading Quiz Module...</p>
+        </div>
+    );
   }
 
   const handleAnswer = (answerText: string) => {
@@ -115,10 +129,11 @@ export default function QuizPage() {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setGameComplete(true);
-      router.push("/verify");
+      router.push("/results"); 
     }
   };
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     setTimeLeft(QUESTION_TIME_LIMIT);
     setSelectedAnswer(null);

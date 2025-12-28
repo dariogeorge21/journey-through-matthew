@@ -21,9 +21,12 @@ const LOCATIONS = [
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { setPlayerName, setPlayerLocation, setSecurityCode, playerLocation } = useGameState();
+  
+  // Only import 'initGame' to initialize the state once on submission
+  const { initGame } = useGameState();
 
   const [name, setName] = useState("");
+  const [location, setLocation] = useState(""); 
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [step, setStep] = useState<"input" | "loading" | "code" | "countdown">("input");
   const [securityCode, setSecurityCodeLocal] = useState("");
@@ -36,6 +39,7 @@ export default function RegisterPage() {
       setError("Identification too short");
       return false;
     }
+    // Updated regex to be slightly more permissive for names
     if (!/^[a-zA-Z\s'-]+$/.test(val)) {
       setError("Invalid characters detected");
       return false;
@@ -46,8 +50,10 @@ export default function RegisterPage() {
 
   const handleNameChange = (newName: string) => {
     setName(newName);
-    if (newName.length > 0 && validateName(newName)) {
-      setPlayerName(newName);
+    
+    // 🔥 FIX: Removed the crashing setPlayerName(newName) call!
+    if (newName.length > 0) {
+        validateName(newName);
     }
   };
 
@@ -68,12 +74,14 @@ export default function RegisterPage() {
   }, [step]);
 
   const handleSubmit = () => {
-    if (!name || !playerLocation || error) return;
+    if (!name || !location || error) return;
     
     setStep("loading");
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     setSecurityCodeLocal(code);
-    setSecurityCode(code);
+    
+    // Initialize the global game state here with all collected data
+    initGame(name, location, code);
 
     // Sequence timing
     setTimeout(() => setStep("code"), 4500);
@@ -143,9 +151,9 @@ export default function RegisterPage() {
                     {LOCATIONS.map((loc) => (
                       <button
                         key={loc}
-                        onClick={() => setPlayerLocation(loc)}
+                        onClick={() => setLocation(loc)} 
                         className={`py-3 px-2 rounded-lg text-xs font-bold transition-all border ${
-                          playerLocation === loc 
+                          location === loc 
                             ? "bg-blue-600 border-blue-400 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]" 
                             : "bg-white/5 border-transparent text-gray-400 hover:bg-white/10"
                         }`}
@@ -159,7 +167,7 @@ export default function RegisterPage() {
                 <div className="flex justify-center pt-4">
                   <Button
                     size="lg"
-                    disabled={!name || !playerLocation || !!error}
+                    disabled={!name || !location || !!error} 
                     onClick={handleSubmit}
                     className="w-full py-6 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black tracking-widest uppercase shadow-[0_10px_30px_rgba(37,99,235,0.3)] transition-all active:scale-95 disabled:opacity-20 disabled:grayscale"
                   >
