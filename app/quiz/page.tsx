@@ -134,7 +134,9 @@ export default function QuizPage() {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setGameComplete(true);
-      router.push("/results"); 
+      // Redirect to verification page instead of results
+      // User must verify their security code before accessing results
+      router.push("/verify");
     }
   };
 
