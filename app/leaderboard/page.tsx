@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { getLeaderboard, LeaderboardEntry } from "@/lib/supabase";
+import { useGameState } from "@/hooks/useGameState";
 import Button from "@/components/ui/Button";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
@@ -34,23 +35,26 @@ const formatDate = (timestamp: string) => {
 
 export default function LeaderboardPage() {
   const router = useRouter();
+  const { resetGame } = useGameState();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     fetchLeaderboard();
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchLeaderboard, 30000);
-    return () => clearInterval(interval);
+    // Live fetching: Refresh every 5 seconds for real-time updates
+    pollIntervalRef.current = setInterval(fetchLeaderboard, 5000);
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
   }, []);
 
   const fetchLeaderboard = async () => {
-    setIsLoading(true);
     setError(null);
     const { data, error: fetchError } = await getLeaderboard(50);
-    
+
     if (fetchError) {
       setError(fetchError);
       setIsLoading(false);
@@ -62,6 +66,11 @@ export default function LeaderboardPage() {
       setLastUpdated(new Date());
     }
     setIsLoading(false);
+  };
+
+  const handlePlayNow = () => {
+    resetGame();
+    router.push("/");
   };
 
   return (
@@ -92,20 +101,35 @@ export default function LeaderboardPage() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <Button
-                onClick={() => router.push("/")}
-                variant="secondary"
-                className="px-6"
+              <motion.div
+                className="relative group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                PLAY NOW
-              </Button>
-              <button
-                onClick={fetchLeaderboard}
-                disabled={isLoading}
-                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/60 text-sm font-medium hover:bg-white/10 hover:text-white/80 transition-all disabled:opacity-50"
-              >
-                {isLoading ? "Refreshing..." : "🔄 Refresh"}
-              </button>
+                {/* Glow effect background */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-600 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500 animate-pulse" />
+
+                {/* Pulsing border effect */}
+                <motion.div
+                  className="absolute -inset-0.5 rounded-lg border-2 border-transparent bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-border opacity-0 group-hover:opacity-100"
+                  animate={{ opacity: [0, 0.5, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+
+                <Button
+                  onClick={handlePlayNow}
+                  variant="secondary"
+                  className="relative px-8 py-3 font-bold text-lg tracking-wide group-hover:shadow-2xl group-hover:shadow-blue-500/50 transition-all duration-300"
+                >
+                  <motion.span
+                    className="inline-block"
+                    animate={{ y: [0, -2, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    ▶ PLAY NOW
+                  </motion.span>
+                </Button>
+              </motion.div>
             </div>
           </motion.div>
 
