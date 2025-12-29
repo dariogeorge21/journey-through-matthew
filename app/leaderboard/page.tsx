@@ -97,7 +97,7 @@ export default function LeaderboardPage() {
                 variant="secondary"
                 className="px-6"
               >
-                ← Return Home
+                PLAY NOW
               </Button>
               <button
                 onClick={fetchLeaderboard}
