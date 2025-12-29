@@ -20,18 +20,46 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 /**
+ * Shuffles the options array for a question and updates the correctAnswer to track the new position.
+ * This ensures that correct answers are randomly distributed across all option positions.
+ * @param question The question object to shuffle options for
+ * @returns A new question object with shuffled options and updated correctAnswer
+ */
+function shuffleQuestionOptions(question: Question): Question {
+  // Create a copy of the options array
+  const shuffledOptions = [...question.options];
+
+  // Shuffle the options array using Fisher-Yates algorithm
+  shuffleArray(shuffledOptions);
+
+  // The correctAnswer string remains the same (it's still the same text)
+  // The validation logic will compare the selected option text with correctAnswer text
+  // This ensures correct answers are randomly distributed across all positions (A, B, C, D)
+  return {
+    ...question,
+    options: shuffledOptions,
+  };
+}
+
+/**
  * Selects 15 unique questions randomly from the pool of 100.
- * @returns An array of 15 random Question objects.
+ * Also shuffles the options for each question to randomize answer positions.
+ * @returns An array of 15 random Question objects with shuffled options.
  */
 export function getRandomQuizQuestions(): Question[] {
   // 1. Create a shallow copy of the full question set (allQuestions)
   const questionsCopy = [...allQuestions];
 
-  // 2. Shuffle the copy
+  // 2. Shuffle the copy to get random questions
   const shuffledQuestions = shuffleArray(questionsCopy);
 
   // 3. Select the first 15 questions for the quiz
-  return shuffledQuestions.slice(0, QUIZ_LENGTH);
+  const selectedQuestions = shuffledQuestions.slice(0, QUIZ_LENGTH);
+
+  // 4. Shuffle the options for each question to randomize answer positions
+  const questionsWithShuffledOptions = selectedQuestions.map(shuffleQuestionOptions);
+
+  return questionsWithShuffledOptions;
 }
 
 /**
