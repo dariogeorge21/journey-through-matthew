@@ -22,13 +22,19 @@ export default function ResultsPage() {
   const router = useRouter();
   const hasSaved = useRef(false);
   const {
-    playerName,
-    playerLocation,
+    // FIX START: Destructure 'player' object instead of 'playerName' and 'playerLocation'
+    player,
+    // FIX END
     securityCode,
     answers,
     questionTimes,
     resetGame,
   } = useGameState();
+
+  // FIX START: Extract name and location from the 'player' object
+  const playerName = player.name;
+  const playerLocation = player.location;
+  // FIX END
 
   const [isLoading, setIsLoading] = useState(true);
   const [scores, setScores] = useState<{
@@ -42,6 +48,13 @@ export default function ResultsPage() {
   );
 
   useEffect(() => {
+    // Check if essential data is available before calculating scores
+    if (!answers || answers.length === 0 || !questionTimes) {
+      // Handle case where state might be missing (e.g., direct navigation to /results)
+      setIsLoading(false);
+      return; 
+    }
+    
     const calculatedScores = calculateScores(answers, questionTimes);
     setScores(calculatedScores);
 
@@ -107,8 +120,9 @@ export default function ResultsPage() {
     );
   }
 
+  // Fallback for division by zero if answers.length is 0 (though checked in useEffect)
   const correctAnswers = answers.filter((a) => a.isCorrect).length;
-  const accuracy = Math.round((correctAnswers / answers.length) * 100);
+  const accuracy = answers.length > 0 ? Math.round((correctAnswers / answers.length) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-[#05070A] relative overflow-hidden flex items-center justify-center p-6">
@@ -151,10 +165,10 @@ export default function ResultsPage() {
                
                <p className="text-blue-400 font-mono text-[10px] tracking-[0.4em] uppercase mb-2 relative z-10">Final Ranking Score</p>
                <motion.div
-                  key={displayScore}
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="text-7xl md:text-8xl font-black text-white relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+                 key={displayScore}
+                 initial={{ scale: 0.9, opacity: 0 }}
+                 animate={{ scale: 1, opacity: 1 }}
+                 className="text-7xl md:text-8xl font-black text-white relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
                >
                  {displayScore.toLocaleString()}
                </motion.div>
@@ -218,7 +232,7 @@ export default function ResultsPage() {
             transition={{ delay: 0.8 }}
             className="flex flex-col gap-4"
           >
-             <div className="relative group">
+              <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000" />
                 <Button 
                     size="lg" 
@@ -227,14 +241,14 @@ export default function ResultsPage() {
                 >
                 Restart the Pilgrimage
                 </Button>
-             </div>
-             <Button 
+              </div>
+              <Button 
                 variant="secondary"
                 onClick={() => router.push("/leaderboard")}
                 className="w-full py-6 text-lg font-semibold"
-             >
+              >
                 🏆 View Leaderboard
-             </Button>
+              </Button>
           </motion.div>
         </div>
       </motion.div>
