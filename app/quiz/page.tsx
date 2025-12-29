@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameState } from "@/hooks/useGameState";
+import { useAudio } from "@/contexts/AudioContext";
 import { QuestionAnswer } from "@/types/game";
 import AnswerExplanationModal from "@/components/quiz/AnswerExplanationModal";
 
@@ -56,10 +57,11 @@ const TimerCircle = ({ timeLeft }: { timeLeft: number }) => {
 
 export default function QuizPage() {
   const router = useRouter();
-  
+  const { playSound, isMuted, toggleMute } = useAudio();
+
   // FIX: Destructure 'questions' from the store here!
   const {
-    questions, 
+    questions,
     currentQuestionIndex,
     setCurrentQuestionIndex,
     addAnswer,
@@ -98,11 +100,14 @@ export default function QuizPage() {
     if (isAnswered) return;
     const timeSpent = QUESTION_TIME_LIMIT - timeLeft;
     const correct = answerText === currentQuestion.correctAnswer;
-    
+
     setSelectedAnswer(answerText);
     setIsAnswered(true);
     setIsCorrect(correct);
     setShowFeedback(true);
+
+    // Play audio feedback immediately
+    playSound(correct ? "success" : "failure");
 
     if (timerRef.current) clearInterval(timerRef.current);
 
@@ -186,7 +191,18 @@ export default function QuizPage() {
             </div>
           </div>
 
-          <TimerCircle timeLeft={timeLeft} />
+          <div className="flex items-center gap-4">
+            <TimerCircle timeLeft={timeLeft} />
+            <motion.button
+              onClick={toggleMute}
+              className="p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              title={isMuted ? "Unmute audio" : "Mute audio"}
+            >
+              <span className="text-xl">{isMuted ? "🔇" : "🔊"}</span>
+            </motion.button>
+          </div>
 
           <div className="hidden md:block w-1/2 text-right">
             <span className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-sm font-medium">
