@@ -95,6 +95,14 @@ export default function OnScreenKeyboard({
             >
               ←
             </motion.button>
+            <motion.button
+              onClick={onClose}
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              ✓ Done
+            </motion.button>
           </div>
         </div>
       </div>

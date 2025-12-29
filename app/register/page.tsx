@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameState } from "@/hooks/useGameState";
-import VoiceInput from "@/components/game/VoiceInput";
 import OnScreenKeyboard from "@/components/game/OnScreenKeyboard";
 import LoadingScreen from "@/components/game/LoadingScreen";
 import Countdown from "@/components/ui/Countdown";
@@ -117,16 +116,9 @@ export default function RegisterPage() {
               </div>
 
               <div className="bg-gray-900/40 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 shadow-2xl space-y-6">
-                {/* Voice & Name Section */}
-                <section className="space-y-6">
-                  <div className="flex flex-col items-center space-y-4">
-                    <VoiceInput 
-                      onTranscribe={handleNameChange} 
-                      onError={setError}
-                      onShowKeyboard={() => setShowKeyboard(true)}
-                    />
-                    <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                  </div>
+                {/* Name Input Section - Touch/On-Screen Keyboard Only */}
+                <section className="space-y-4">
+                  <h3 className="text-center text-xs font-bold text-gray-500 tracking-[0.3em] uppercase">Enter Your Name</h3>
 
                   <div className="relative group">
                     <input
@@ -135,13 +127,15 @@ export default function RegisterPage() {
                       readOnly // Disables physical keyboard
                       onKeyDown={(e) => e.preventDefault()} // Extra safety
                       onClick={() => setShowKeyboard(true)}
-                      placeholder="TOUCH TO ENTER NAME"
+                      placeholder="TAP TO ENTER NAME"
                       className="w-full bg-black/40 border-2 border-white/5 rounded-xl py-5 px-6 text-center text-xl font-bold tracking-widest text-blue-100 placeholder:text-gray-700 cursor-pointer transition-all hover:border-blue-500/30 focus:border-blue-500/50 outline-none"
                     />
                     <div className="absolute -bottom-6 left-0 right-0 text-center">
                       {error && <span className="text-red-500 text-xs font-mono uppercase tracking-tighter">{error}</span>}
                     </div>
                   </div>
+
+                  <p className="text-center text-xs text-gray-500 mt-2">Use the on-screen keyboard to enter your name</p>
                 </section>
 
                 {/* Location Grid */}
